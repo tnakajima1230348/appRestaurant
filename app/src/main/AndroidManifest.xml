@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppShop">
         <activity
+            android:name=".RestaurantRegisterAccount"
+            android:exported="false" />
+        <activity
+            android:name=".ShowResult"
+            android:exported="false" />
+        <activity
             android:name=".RestaurantLogin"
             android:exported="true">
             <intent-filter>
