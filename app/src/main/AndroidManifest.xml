@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppShop">
         <activity
+            android:name=".AdminAccountInfoChange"
+            android:exported="false" />
+        <activity
             android:name=".RestaurantRegisterAccount"
             android:exported="false" />
         <activity

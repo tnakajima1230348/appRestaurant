@@ -5,11 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 
-class Restaurant : AppCompatActivity() {
+class RestaurantAccountInfoChange : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_restaurant)
-
+        setContentView(R.layout.activity_restaurant_account_info_change)
         val buttonToHome: Button = findViewById(R.id.buttonHome)
         val buttonToSearchRestaurant: Button = findViewById(R.id.buttonSearchRestaurant)
         val buttonToSearchUser: Button = findViewById(R.id.buttonSearchUser)
@@ -17,21 +16,22 @@ class Restaurant : AppCompatActivity() {
 
         //bottom footer event listeners
         buttonToHome.setOnClickListener {
-            val intent = Intent(this@Restaurant, Restaurant::class.java)
+            val intent = Intent(this@RestaurantAccountInfoChange, Restaurant::class.java)
             startActivity(intent)
         }
 
         buttonToSearchRestaurant.setOnClickListener{
-            TODO("not yet implemented")
+            //TODO("not yet implemented")
         }
 
         buttonToSearchUser.setOnClickListener {
-            TODO("not yet implemented")
+            //TODO("not yet implemented")
         }
 
         buttonToSetting.setOnClickListener {
-            val intent = Intent(this@Restaurant, RestaurantAccountInfoChange::class.java)
+            val intent = Intent(this@RestaurantAccountInfoChange, RestaurantAccountInfoChange::class.java)
             startActivity(intent)
         }
+
     }
 }
