@@ -20,8 +20,8 @@
 
 
     <LinearLayout
-        android:layout_width="322dp"
-        android:layout_height="663dp"
+        android:layout_width="323dp"
+        android:layout_height="616dp"
         android:layout_marginTop="92dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
