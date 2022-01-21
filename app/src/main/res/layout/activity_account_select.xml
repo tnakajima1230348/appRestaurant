@@ -41,7 +41,7 @@
             android:textSize="15sp" />
 
         <Button
-            android:id="@+id/buttonSearchRestaurant"
+            android:id="@+id/buttonAccount"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_marginEnd="1dp"
@@ -52,7 +52,7 @@
             android:textSize="15sp" />
 
         <Button
-            android:id="@+id/buttonSearchUser"
+            android:id="@+id/buttonSeat"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_marginEnd="1dp"
@@ -63,7 +63,7 @@
             android:textSize="15sp" />
 
         <Button
-            android:id="@+id/buttonSetting"
+            android:id="@+id/buttonReserve"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_marginEnd="1dp"
