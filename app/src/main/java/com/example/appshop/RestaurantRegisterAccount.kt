@@ -32,7 +32,7 @@ class RestaurantRegisterAccount : AppCompatActivity() {
         //edit text, name, password, and admin_password
         val eTxtUserName: EditText = findViewById(R.id.textBoxUserName)
         val eTxtPassword: EditText = findViewById(R.id.textBoxPassword)
-        val eTxtAdminPassword: EditText = findViewById(R.id.textBoxAdminPassword)
+        val eTxtRestaurantPassword: EditText = findViewById(R.id.textBoxRestaurantPassword)
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
 
         //when register button pushed
@@ -42,7 +42,7 @@ class RestaurantRegisterAccount : AppCompatActivity() {
             val registerParams = JSONObject()
             val userName: String = eTxtUserName.text.toString()
             val password: String = eTxtPassword.text.toString()
-            val adminPassword: String = eTxtAdminPassword.text.toString()
+            val adminPassword: String = eTxtRestaurantPassword.text.toString()
 
             //if some field empty,
             if(userName.isEmpty() || password.isEmpty() || adminPassword.isEmpty()){

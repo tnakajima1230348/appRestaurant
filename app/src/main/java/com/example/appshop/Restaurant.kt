@@ -11,9 +11,9 @@ class Restaurant : AppCompatActivity() {
         setContentView(R.layout.activity_restaurant)
 
         val buttonToHome: Button = findViewById(R.id.buttonHome)
-        val buttonToSearchRestaurant: Button = findViewById(R.id.buttonSearchRestaurant)
-        val buttonToSearchUser: Button = findViewById(R.id.buttonSearchUser)
-        val buttonToSetting: Button = findViewById(R.id.buttonSetting)
+        val buttonToAccount: Button = findViewById(R.id.buttonAccount)
+        val buttonToSeat: Button = findViewById(R.id.buttonSeat)
+        val buttonToReserve: Button = findViewById(R.id.buttonReserve)
 
         //bottom footer event listeners
         buttonToHome.setOnClickListener {
@@ -21,17 +21,16 @@ class Restaurant : AppCompatActivity() {
             startActivity(intent)
         }
 
-        buttonToSearchRestaurant.setOnClickListener{
+        buttonToAccount.setOnClickListener{
             TODO("not yet implemented")
         }
 
-        buttonToSearchUser.setOnClickListener {
+        buttonToSeat.setOnClickListener {
             TODO("not yet implemented")
         }
 
-        buttonToSetting.setOnClickListener {
-            val intent = Intent(this@Restaurant, RestaurantAccountInfoChange::class.java)
-            startActivity(intent)
+        buttonToReserve.setOnClickListener {
+            TODO("not yet implemented")
         }
     }
 }
