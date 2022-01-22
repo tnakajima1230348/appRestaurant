@@ -22,7 +22,7 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
         }
 
         buttonToAccount.setOnClickListener{
-            val intent = Intent(this@RestaurantAccountInfoChange, RestaurantAccountSelect::class.java)
+            val intent = Intent(this@RestaurantAccountInfoChange, RestaurantAccountSetting::class.java)
             startActivity(intent)
         }
 

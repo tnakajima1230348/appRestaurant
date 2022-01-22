@@ -13,7 +13,7 @@
             android:name=".RestaurantHoliday"
             android:exported="false" />
         <activity
-            android:name=".RestaurantAccountSelect"
+            android:name=".RestaurantAccountSetting"
             android:exported="false" />
         <activity
             android:name=".Restaurant"

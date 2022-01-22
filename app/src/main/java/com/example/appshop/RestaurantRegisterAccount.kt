@@ -32,7 +32,6 @@ class RestaurantRegisterAccount : AppCompatActivity() {
         //edit text, name, password, and admin_password
         val eTxtUserName: EditText = findViewById(R.id.textBoxUserName)
         val eTxtPassword: EditText = findViewById(R.id.textBoxPassword)
-        val eTxtRestaurantPassword: EditText = findViewById(R.id.textBoxRestaurantPassword)
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
 
         //when register button pushed

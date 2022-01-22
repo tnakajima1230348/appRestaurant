@@ -33,7 +33,7 @@ class RestaurantHoliday : AppCompatActivity() {
         }
 
         buttonToAccount.setOnClickListener{
-            val intent = Intent(this@RestaurantHoliday, RestaurantAccountSelect::class.java)
+            val intent = Intent(this@RestaurantHoliday, RestaurantAccountSetting::class.java)
             startActivity(intent)
         }
 
