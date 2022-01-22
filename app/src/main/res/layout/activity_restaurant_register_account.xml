@@ -63,19 +63,6 @@
             android:textColor="#444444"
             android:textColorHint="#777777" />
 
-        <EditText
-            android:id="@+id/textBoxRestaurantPassword"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="80dp"
-            android:background="#efefef"
-            android:baselineAligned="false"
-            android:ems="10"
-            android:hint="restaurant_password"
-            android:inputType="textPassword"
-            android:textColor="#444444"
-            android:textColorHint="#777777" />
-
         <Button
             android:id="@+id/buttonRegister"
             android:layout_width="200dp"
