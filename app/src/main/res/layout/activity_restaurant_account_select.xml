@@ -85,7 +85,7 @@
         tools:layout_editor_absoluteY="166dp" />
 
     <Button
-        android:id="@+id/buttonAccountInfoChange"
+        android:id="@+id/buttonHoliday"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_gravity="center"

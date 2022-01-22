@@ -10,11 +10,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import java.net.URI
-import org.json.*
+import org.json.JSONObject
 
 class RestaurantLogin : AppCompatActivity() {
     companion object{
         const val loginReqId: Int = 1
+        var loginRestaurantName: String = ""
     }
 
     private val uri = WsClient.serverRemote
@@ -32,28 +33,36 @@ class RestaurantLogin : AppCompatActivity() {
         //edit text, name and password
         val eTxtUserName: EditText = findViewById(R.id.textBoxUserName)
         val eTxtPassword: EditText = findViewById(R.id.textBoxPassword)
+        val errorDisplay: TextView = findViewById(R.id.errorDisplay)
 
         val buttonLogin: Button = findViewById(R.id.buttonLogin)
         val buttonCreateAcc: Button = findViewById(R.id.buttonCreateAccount)
         //eventListener
         buttonLogin.setOnClickListener {
-            val loginRequest = JSONObject()
             val loginParams = JSONObject()
             val userName: String = eTxtUserName.text.toString()
             val password: String = eTxtPassword.text.toString()
-            val role = "admin"
+            val role = "restaurant"
 
             loginParams.put("user_name", userName)
             loginParams.put("password", password)
             loginParams.put("role", role)
 
-            loginRequest.put("jsonrpc", "2.0")
-            loginRequest.put("id", loginReqId)
-            loginRequest.put("method", "login")
-            loginRequest.put("params", loginParams)
+            val loginRequest = client.createJsonrpcReq("login", loginReqId, loginParams)
+
             Log.i(javaClass.simpleName, "send login req")
             Log.i(javaClass.simpleName, loginRequest.toString())
-            client.send(loginRequest.toString())
+
+            try{
+                if(client.isClosed) {
+                    client.reconnect()
+                }
+                client.send(loginRequest.toString())
+            } catch (ex: Exception){
+                Log.i(javaClass.simpleName, "send failed $ex")
+                errorDisplay.visibility = View.VISIBLE
+                errorDisplay.text = "インターネットに接続されていません"
+            }
         }
 
         buttonCreateAcc.setOnClickListener {

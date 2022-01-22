@@ -38,23 +38,18 @@ class RestaurantRegisterAccount : AppCompatActivity() {
         //when register button pushed
         val buttonRegister: Button = findViewById(R.id.buttonRegister)
         buttonRegister.setOnClickListener {
-            val registerRequest = JSONObject()
             val registerParams = JSONObject()
             val userName: String = eTxtUserName.text.toString()
             val password: String = eTxtPassword.text.toString()
-            val adminPassword: String = eTxtRestaurantPassword.text.toString()
 
             //if some field empty,
-            if(userName.isEmpty() || password.isEmpty() || adminPassword.isEmpty()){
+            if(userName.isEmpty() || password.isEmpty()){
                 when {
                     userName.isEmpty() -> {
                         errorDisplay.text = "ユーザネームが入力されていません"
                     }
                     password.isEmpty() -> {
                         errorDisplay.text = "パスワードが入力されていません"
-                    }
-                    adminPassword.isEmpty() -> {
-                        errorDisplay.text = "admin_passwordが入力されていません"
                     }
                 }
                 errorDisplay.visibility = View.VISIBLE
@@ -63,18 +58,22 @@ class RestaurantRegisterAccount : AppCompatActivity() {
 
             registerParams.put("admin_name", userName)
             registerParams.put("password", password)
-            registerParams.put("admin_password", adminPassword)
+            val registerRequest = client.createJsonrpcReq("register/restaurant", registerReqId)
 
-            registerRequest.put("jsonrpc", "2.0")
-            registerRequest.put("id", registerReqId)
-            registerRequest.put("method", "register/admin")
-
-            registerRequest.put("params", registerParams)
 
             Log.i(javaClass.simpleName, "send register req")
             Log.i(javaClass.simpleName, registerRequest.toString())
-            client.send(registerRequest.toString())
 
+            try{
+                if(client.isClosed) {
+                    client.reconnect()
+                }
+                client.send(registerRequest.toString())
+            } catch (ex: Exception){
+                Log.i(javaClass.simpleName, "send failed $ex")
+                errorDisplay.visibility = View.VISIBLE
+                errorDisplay.text = "インターネットに接続されていません"
+            }
         }
     }
 
@@ -116,16 +115,17 @@ class RegisterWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
                 intent.putExtra("message", message)
                 intent.putExtra("transitionBtnMessage", transitionBtnMessage)
                 intent.putExtra("isBeforeLogin", isBeforeLogin)
-                activity.runOnUiThread{
-                    activity.startActivity(intent)
-                }
+
+                activity.startActivity(intent)
+                activity.finish()
+                this.close(NORMAL_CLOSURE)
 
                 //when error occurred with registration
             }else if(status == "error"){
                 val reason: String = result.getString("reason")
                 activity.runOnUiThread{
-                    if(reason == "You don't have permission to create restaurant account. restaurant_password is wrong."){
-                        errorDisplay.text = "restaurant_passwordが間違っています"
+                    if(reason == "user_name has already taken by other user"){
+                        errorDisplay.text = "ユーザネームが重複しています"
                     }else{
                         errorDisplay.text = reason
                     }

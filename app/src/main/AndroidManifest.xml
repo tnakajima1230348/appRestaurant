@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppShop">
         <activity
+            android:name=".RestaurantHoliday"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantAccountSelect"
+            android:exported="false" />
+        <activity
             android:name=".Restaurant"
             android:exported="false" />
         <activity
