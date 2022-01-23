@@ -45,7 +45,7 @@
             android:layout_marginTop="5dp"
             android:background="#efefef"
             android:ems="10"
-            android:hint="ユーザーネーム"
+            android:hint="店名"
             android:inputType="textPersonName"
             android:textColor="#444444"
             android:textColorHint="#777777" />

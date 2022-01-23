@@ -26,6 +26,7 @@ class RestaurantAccountInfoShow : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restaurant_account_info_show)
+        client.connect()
     }
 
     override fun onResume() {
@@ -35,8 +36,8 @@ class RestaurantAccountInfoShow : AppCompatActivity() {
         val buttonAccountInfoChange: Button = findViewById(R.id.buttonAccountInfoChange)
 
 
-        val token = intent.getStringExtra("token")!!
-        val restaurantName = intent.getStringExtra("restaurantName")
+        val token = Restaurant.globalToken
+        val restaurantName = Restaurant.globalRestaurantName
 
         val getInfoParams = JSONObject()
         getInfoParams.put("searchBy", "restaurant_name")
@@ -97,7 +98,7 @@ class GetRestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsCl
     var isReceived = false
 
     private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
-    private val txtUserName: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantName) }
+    private val txtRestaurantName: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantName) }
     private val txtEmail: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantEmail) }
     private val txtAddress: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantAddress) }
 
@@ -120,7 +121,7 @@ class GetRestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsCl
                 this.address = result.getString("address")
 
                 activity.runOnUiThread {
-                    txtUserName.text = this.restaurantName
+                    txtRestaurantName.text = this.restaurantName
                     txtEmail.text = this.emailAddr
                     txtAddress.text = this.address
                 }

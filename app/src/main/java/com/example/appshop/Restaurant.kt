@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
 import java.net.URI
 
@@ -18,6 +19,10 @@ class Restaurant : AppCompatActivity() {
     companion object{
         const val logoutReqId: Int = 3
         const val getRestaurantInfoId: Int = 7
+        var globalToken = ""
+        var globalRestauarntId = -1
+        var globalRestaurantName = ""
+        var globalTokenExpiry = ""
     }
 
     private val uri = WsClient.serverRemote
@@ -39,25 +44,20 @@ class Restaurant : AppCompatActivity() {
         super.onResume()
         client.connect()
 
-        val token = intent.getStringExtra("token")!!
-        val tokenExpiry = intent.getStringExtra("expire")
-        val restaurantName = intent.getStringExtra("restaurantName")
-        this.restaurant_name = restaurantName!!
-
         val getRestaurantInfo = Runnable {
             while (!client.isOpen){
                 //do nothing
                 //wait until websocket open
             }
             //the connection openings is guaranteed -> attach no error handler
-            //client.sendReqGetRestaurantInfoByName(token, this.restaurant_name)
+            client.sendReqGetRestaurantInfoByName(Restaurant.globalToken, this.restaurant_name)
             return@Runnable
         }
         Thread( getRestaurantInfo ).start()
 
-        Log.i(javaClass.simpleName, "token recved $token")
-        Log.i(javaClass.simpleName, "token expiry $tokenExpiry")
-        Log.i(javaClass.simpleName, "restaurantName: $restaurantName")
+        Log.i(javaClass.simpleName, "token recved ${Restaurant.globalToken}")
+        Log.i(javaClass.simpleName, "token expiry ${Restaurant.globalTokenExpiry}")
+        Log.i(javaClass.simpleName, "restaurantName: ${Restaurant.globalRestaurantName}")
 
         val buttonToHome: Button = findViewById(R.id.buttonHome)
         val buttonToSetting: Button = findViewById(R.id.buttonSetting)
@@ -71,9 +71,9 @@ class Restaurant : AppCompatActivity() {
         }
 
         buttonToSetting.setOnClickListener{
-            val intent = Intent(this@Restaurant, RestaurantAccountSetting::class.java)
-            intent.putExtra("restaurantName", restaurantName)
-            intent.putExtra("token", token)
+            val intent = Intent(this@Restaurant, RestaurantAccountInfoShow::class.java)
+            intent.putExtra("restaurantName", Restaurant.globalRestaurantName)
+            intent.putExtra("token", Restaurant.globalToken)
             startActivity(intent)
             client.close(WsClient.NORMAL_CLOSURE)
         }
@@ -88,7 +88,7 @@ class Restaurant : AppCompatActivity() {
 
         buttonLogout.setOnClickListener {
             val logoutParams = JSONObject()
-            logoutParams.put("token", token)
+            logoutParams.put("token", Restaurant.globalToken)
             val logoutRequest = client.createJsonrpcReq("logout", logoutReqId, logoutParams)
 
             try{
@@ -135,14 +135,19 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
     /**
      * this method will send request about getting user information
      */
-    fun sendReqGetUserInfoByName(token: String, clientName: String){
+    fun sendReqGetRestaurantInfoByName(token: String, clientName: String){
         Log.i(javaClass.simpleName, "send request to get user information")
         val params = JSONObject()
         params.put("searchBy", "user_name")
-        params.put("user_name", clientName)
-        params.put("token", token)
+        params.put("user_name", Restaurant.globalRestaurantName)
+        params.put("token", Restaurant.globalToken)
         val request = this.createJsonrpcReq("getInfo/user/basic", Restaurant.getRestaurantInfoId, params)
         this.send(request.toString())
+    }
+
+    override fun onOpen(handshakedata: ServerHandshake?) {
+        super.onOpen(handshakedata)
+        this.sendReqGetRestaurantInfoByName(Restaurant.globalToken, Restaurant.globalRestaurantName)
     }
 
     override fun onMessage(message: String?) {

@@ -1,16 +1,23 @@
 package com.example.appshop
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import java.lang.Exception
 
 class ShowResult : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_result)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         val message = intent.getStringExtra("message")
         val transitionBtnMessage = intent.getStringExtra("transitionBtnMessage")
         val isBeforeLogin = intent.getBooleanExtra("isBeforeLogin", true)
@@ -32,5 +39,3 @@ class ShowResult : AppCompatActivity() {
         }
     }
 }
-© 2022 GitHub, Inc.
-Term

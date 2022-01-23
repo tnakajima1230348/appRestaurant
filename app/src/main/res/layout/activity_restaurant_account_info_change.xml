@@ -43,40 +43,10 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_marginTop="20dp"
-            android:text="ユーザネーム" />
+            android:text="店名" />
 
         <EditText
-            android:id="@+id/textBoxUserName"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#efefef"
-            android:backgroundTint="#efefef"
-            android:paddingTop="3dp"
-            android:textSize="15dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_marginTop="20dp"
-            android:text="誕生日" />
-
-        <EditText
-            android:id="@+id/textBoxUserBirthday"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="#efefef"
-            android:backgroundTint="#efefef"
-            android:paddingTop="3dp"
-            android:textSize="15dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_marginTop="20dp"
-            android:text="性別" />
-
-        <EditText
-            android:id="@+id/textBoxUserGender"
+            android:id="@+id/textBoxRestaurantName"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"
@@ -91,7 +61,7 @@
             android:text="メールアドレス" />
 
         <EditText
-            android:id="@+id/textBoxUserEmail"
+            android:id="@+id/textBoxRestaurantEmail"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"
@@ -106,7 +76,7 @@
             android:text="住所" />
 
         <EditText
-            android:id="@+id/textBoxUserAddress"
+            android:id="@+id/textBoxRestaurantAddress"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"

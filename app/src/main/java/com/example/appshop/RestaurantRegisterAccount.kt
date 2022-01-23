@@ -30,7 +30,7 @@ class RestaurantRegisterAccount : AppCompatActivity() {
         client.connect()
 
         //edit text, name, password, and admin_password
-        val eTxtUserName: EditText = findViewById(R.id.textBoxUserName)
+        val eTxtRestaurantName: EditText = findViewById(R.id.textBoxRestaurantName)
         val eTxtPassword: EditText = findViewById(R.id.textBoxPassword)
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
 
@@ -38,14 +38,14 @@ class RestaurantRegisterAccount : AppCompatActivity() {
         val buttonRegister: Button = findViewById(R.id.buttonRegister)
         buttonRegister.setOnClickListener {
             val registerParams = JSONObject()
-            val userName: String = eTxtUserName.text.toString()
+            val restaurantName: String = eTxtRestaurantName.text.toString()
             val password: String = eTxtPassword.text.toString()
 
             //if some field empty,
-            if(userName.isEmpty() || password.isEmpty()){
+            if(restaurantName.isEmpty() || password.isEmpty()){
                 when {
-                    userName.isEmpty() -> {
-                        errorDisplay.text = "ユーザネームが入力されていません"
+                    restaurantName.isEmpty() -> {
+                        errorDisplay.text = "店名が入力されていません"
                     }
                     password.isEmpty() -> {
                         errorDisplay.text = "パスワードが入力されていません"
@@ -55,9 +55,9 @@ class RestaurantRegisterAccount : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            registerParams.put("admin_name", userName)
+            registerParams.put("restaurant_name", restaurantName)
             registerParams.put("password", password)
-            val registerRequest = client.createJsonrpcReq("register/restaurant", registerReqId)
+            val registerRequest = client.createJsonrpcReq("register/restaurant", registerReqId, registerParams)
 
 
             Log.i(javaClass.simpleName, "send register req")
@@ -123,8 +123,8 @@ class RegisterWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
             }else if(status == "error"){
                 val reason: String = result.getString("reason")
                 activity.runOnUiThread{
-                    if(reason == "user_name has already taken by other user"){
-                        errorDisplay.text = "ユーザネームが重複しています"
+                    if(reason == "restaurant_name has already taken by other user"){
+                        errorDisplay.text = "店名が重複しています"
                     }else{
                         errorDisplay.text = reason
                     }
