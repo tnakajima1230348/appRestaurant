@@ -56,7 +56,6 @@
             android:textSize="15dp"/>
 
 
-
         <TextView
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
@@ -98,6 +97,4 @@
             android:textColor="#555555" />
 
     </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout></androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

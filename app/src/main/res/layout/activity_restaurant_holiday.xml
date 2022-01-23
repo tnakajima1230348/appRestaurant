@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     android:background="#f5e131"
     tools:context=".Restaurant">
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:textSize="30sp"
         android:text="店舗HOME"
@@ -41,7 +42,7 @@
             android:id="@+id/buttonAccount"
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_marginEnd="1dp"
+            android:layout_marginRight="1dp"
             android:layout_weight="1"
             android:backgroundTint="#eb4242"
             android:padding="0dp"
@@ -52,7 +53,7 @@
             android:id="@+id/buttonSeat"
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_marginEnd="1dp"
+            android:layout_marginRight="1dp"
             android:layout_weight="1"
             android:backgroundTint="#eb4242"
             android:padding="0dp"
@@ -63,20 +64,11 @@
             android:id="@+id/buttonReserve"
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_marginEnd="1dp"
+            android:layout_marginRight="1dp"
             android:layout_weight="1"
             android:backgroundTint="#eb4242"
             android:padding="0dp"
             android:text="予約"
             android:textSize="15sp" />
     </LinearLayout>
-
-    <CalendarView
-        android:id="@+id/calendar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="80dp" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

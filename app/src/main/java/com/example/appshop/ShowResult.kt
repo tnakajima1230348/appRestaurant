@@ -36,6 +36,7 @@ class ShowResult : AppCompatActivity() {
             }
 
             startActivity(intent)
+            finish()
         }
     }
 }
