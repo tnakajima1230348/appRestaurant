@@ -26,15 +26,15 @@ fun loadData() {
     var textSize = 0
     var smallTextSize = 0
     var mediumTextSize = 0
-    textSize = getResources().getDimension(R.dimen.font_size_verysmall)
-    smallTextSize = getResources().getDimension(R.dimen.font_size_small)
-    mediumTextSize = getResources().getDimension(R.dimen.font_size_medium)
+    "20dp".also { textSize = it }
+    "20dp".also { smallTextSize = it }
+    "20dp".also { mediumTextSize = it }
     val players = Player()
     val data: Array<PlayerData> = players.getPlayers()
     val rows = data.size
-    getSupportActionBar().setTitle("Players ($rows)")
     var textSpacer: TextView? = null
-    mTableLayout.removeAllViews()
+
+    mTableLayout.removeAllViews();
     // -1 はヘッダー行
     for (i in -1 until rows) {
         var row: PlayerData? = null
@@ -143,3 +143,5 @@ fun loadData() {
         }
     }
 }
+
+
