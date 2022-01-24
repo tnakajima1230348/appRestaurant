@@ -67,6 +67,7 @@ class Restaurant : AppCompatActivity() {
         val buttonToSeat: Button = findViewById(R.id.buttonSeat)
         val buttonToReserve: Button = findViewById(R.id.buttonReserve)
         val buttonLogout: Button = findViewById(R.id.buttonLogout)
+        val buttonToCalender: Button = findViewById(R.id.buttonCalender)
 
         //bottom footer event listeners
         buttonToHome.setOnClickListener {
@@ -86,6 +87,10 @@ class Restaurant : AppCompatActivity() {
         }
 
         buttonToReserve.setOnClickListener {
+            TODO("not yet implemented")
+        }
+
+        buttonToCalender.setOnClickListener {
             TODO("not yet implemented")
         }
 
