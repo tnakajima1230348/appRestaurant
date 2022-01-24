@@ -1,24 +1,15 @@
 package com.example.appshop
 
 import android.graphics.Color
-
-import android.widget.TableRow
-
-import android.widget.TextView
-
-import android.widget.TableLayout
-
 import android.util.TypedValue
-
-import java.util.Locale
-
 import android.view.Gravity
-
-import android.R
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
 import java.lang.String
 
 
-fun loadData() {
+fun loadData(mTableLayout: Any) {
     val leftRowMargin = 0
     val topRowMargin = 0
     val rightRowMargin = 0
@@ -34,7 +25,6 @@ fun loadData() {
     val rows = data.size
     var textSpacer: TextView? = null
 
-    mTableLayout.removeAllViews();
     // -1 はヘッダー行
     for (i in -1 until rows) {
         var row: PlayerData? = null
@@ -101,47 +91,49 @@ fun loadData() {
             tv4.text = "Birth"
             tv4.setBackgroundColor(Color.parseColor("#f0f0f0"))
             tv4.setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSize.toFloat())
-        } else {
-            tv4.setText(SimpleDateFormat("yyyy/MM/dd", Locale.JAPAN).format(row.getBirth()))
-            tv4.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat())
-        }
-        // テーブルに行を追加
-        val tr = TableRow(this)
-        tr.id = i + 1
-        val trParams = TableLayout.LayoutParams(
-            TableLayout.LayoutParams.MATCH_PARENT,
-            TableLayout.LayoutParams.WRAP_CONTENT
-        )
-        trParams.setMargins(leftRowMargin, topRowMargin, rightRowMargin, bottomRowMargin)
-        tr.setPadding(0, 0, 0, 0)
-        tr.layoutParams = trParams
-        tr.addView(tv)
-        tr.addView(tv2)
-        tr.addView(tv3)
-        tr.addView(tv4)
-        mTableLayout.addView(tr, trParams)
-        // 罫線を追加
-        if (i > -1) {
-            val trSep = TableRow(this)
-            val trParamsSep = TableLayout.LayoutParams(
+
+            // テーブルに行を追加
+            val tr = TableRow(this)
+            tr.id = i + 1
+            val trParams = TableLayout.LayoutParams(
                 TableLayout.LayoutParams.MATCH_PARENT,
                 TableLayout.LayoutParams.WRAP_CONTENT
             )
-            trParamsSep.setMargins(leftRowMargin, topRowMargin, rightRowMargin, bottomRowMargin)
-            trSep.layoutParams = trParamsSep
-            val tvSep = TextView(this)
-            val tvSepLay = TableRow.LayoutParams(
-                TableRow.LayoutParams.MATCH_PARENT,
-                TableRow.LayoutParams.WRAP_CONTENT
-            )
-            tvSepLay.span = 4
-            tvSep.layoutParams = tvSepLay
-            tvSep.setBackgroundColor(Color.parseColor("#d9d9d9"))
-            tvSep.height = 1
-            trSep.addView(tvSep)
-            mTableLayout.addView(trSep, trParamsSep)
+            trParams.setMargins(leftRowMargin, topRowMargin, rightRowMargin, bottomRowMargin)
+            tr.setPadding(0, 0, 0, 0)
+            tr.layoutParams = trParams
+            tr.addView(tv)
+            tr.addView(tv2)
+            tr.addView(tv3)
+            tr.addView(tv4)
+            mTableLayout.addView(tr, trParams)
+            // 罫線を追加
+            if (i > -1) {
+                val trSep = TableRow(this)
+                val trParamsSep = TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT
+                )
+                trParamsSep.setMargins(leftRowMargin, topRowMargin, rightRowMargin, bottomRowMargin)
+                trSep.layoutParams = trParamsSep
+                val tvSep = TextView(this)
+                val tvSepLay = TableRow.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT
+                )
+                tvSepLay.span = 4
+                tvSep.layoutParams = tvSepLay
+                tvSep.setBackgroundColor(Color.parseColor("#d9d9d9"))
+                tvSep.height = 1
+                trSep.addView(tvSep)
+                mTableLayout.addView(trSep, trParamsSep)
+            }
         }
     }
+}
+
+private fun Any.addView(tr: TableRow, trParams: TableLayout.LayoutParams) {
+
 }
 
 
