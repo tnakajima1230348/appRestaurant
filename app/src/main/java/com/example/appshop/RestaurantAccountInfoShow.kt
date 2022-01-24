@@ -21,7 +21,7 @@ class RestaurantAccountInfoShow : AppCompatActivity() {
     }
 
     private val uri = WsClient.serverRemote
-    private var client = GetRestaurantInfoWsClient(this, uri)
+    private var client = RestaurantInfoWsClient(this, uri)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,13 +87,13 @@ class RestaurantAccountInfoShow : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        client = GetRestaurantInfoWsClient(this, uri)
+        client = RestaurantInfoWsClient(this, uri)
     }
 
 
 }
 
-class GetRestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
+class RestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
     var restaurantId: Int = -1
     var restaurantName = ""
     var emailAddr = ""
