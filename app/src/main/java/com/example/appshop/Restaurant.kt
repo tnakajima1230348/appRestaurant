@@ -60,7 +60,7 @@ class Restaurant : AppCompatActivity() {
 
         Log.i(javaClass.simpleName, "token recved ${Restaurant.globalToken}")
         Log.i(javaClass.simpleName, "token expiry ${Restaurant.globalTokenExpiry}")
-        Log.i(javaClass.simpleName, "restaurantName: ${Restaurant.globalRestaurantName}")
+        Log.i(javaClass.simpleName, "userName: ${Restaurant.globalRestaurantName}")
 
         val buttonToHome: Button = findViewById(R.id.buttonHome)
         val buttonToSetting: Button = findViewById(R.id.buttonSetting)
@@ -76,7 +76,7 @@ class Restaurant : AppCompatActivity() {
 
         buttonToSetting.setOnClickListener{
             val intent = Intent(this@Restaurant, RestaurantAccountInfoShow::class.java)
-            intent.putExtra("restaurantName", Restaurant.globalRestaurantName)
+            intent.putExtra("userName", Restaurant.globalRestaurantName)
             intent.putExtra("token", Restaurant.globalToken)
             startActivity(intent)
             client.close(WsClient.NORMAL_CLOSURE)

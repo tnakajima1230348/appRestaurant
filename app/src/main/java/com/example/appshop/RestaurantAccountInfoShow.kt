@@ -40,10 +40,10 @@ class RestaurantAccountInfoShow : AppCompatActivity() {
         val restaurantName = Restaurant.globalRestaurantName
 
         val getInfoParams = JSONObject()
-        getInfoParams.put("searchBy", "restaurant_name")
-        getInfoParams.put("restaurant_name", restaurantName)
+        getInfoParams.put("searchBy", "user_name")
+        getInfoParams.put("user_name", restaurantName)
         getInfoParams.put("token", token)
-        val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/basic", getRestaurantInfoId, getInfoParams)
+        val getInfoRequest = client.createJsonrpcReq("getInfo/user/basic", getRestaurantInfoId, getInfoParams)
 
         //attempt to send until connection established
         Timer().schedule(50, 200) {
@@ -69,8 +69,8 @@ class RestaurantAccountInfoShow : AppCompatActivity() {
         buttonAccountInfoChange.setOnClickListener {
             if(client.isReceived){
                 val intent = Intent(this@RestaurantAccountInfoShow, RestaurantAccountInfoChange::class.java)
-                intent.putExtra("restaurantId", client.restaurantId)
-                intent.putExtra("restaurantName", client.restaurantName)
+                intent.putExtra("userId", client.restaurantId)
+                intent.putExtra("userName", client.restaurantName)
                 intent.putExtra("emailAddr", client.emailAddr)
                 intent.putExtra("address", client.address)
                 intent.putExtra("token", token)

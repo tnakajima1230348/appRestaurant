@@ -55,9 +55,9 @@ class RestaurantRegisterAccount : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            registerParams.put("restaurant_name", restaurantName)
+            registerParams.put("user_name", restaurantName)
             registerParams.put("password", password)
-            val registerRequest = client.createJsonrpcReq("register/restaurant", registerReqId, registerParams)
+            val registerRequest = client.createJsonrpcReq("register/user", registerReqId, registerParams)
 
 
             Log.i(javaClass.simpleName, "send register req")

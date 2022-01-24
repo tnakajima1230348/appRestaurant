@@ -29,8 +29,8 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         client.connect()
-        val currentRestaurantId = intent.getIntExtra("restaurantId", 0)
-        val currentRestaurantName = intent.getStringExtra("restaurantName")
+        val currentRestaurantId = intent.getIntExtra("userId", 0)
+        val currentRestaurantName = intent.getStringExtra("userName")
         val currentEmail = intent.getStringExtra("emailAddr")
         val currentAddress = intent.getStringExtra("address")
         val token = Restaurant.globalToken
@@ -50,7 +50,7 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
         buttonSubmit.setOnClickListener {
 
             val params = JSONObject()
-            params.put("restaurant_name", etxtRestaurantName.text.toString())
+            params.put("user_name", etxtRestaurantName.text.toString())
             params.put("email_addr", etxtRestaurantEmail.text.toString())
             params.put("address", etxtRestaurantAddress.text.toString())
             params.put("token", token)

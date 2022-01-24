@@ -81,7 +81,6 @@ open class WsClient(uri: URI) : WebSocketClient(uri) {
         Log.i(javaClass.simpleName, "executing on ${Thread.currentThread()}")
         if(code != NORMAL_CLOSURE){
             Log.i(javaClass.simpleName, "trying to reconnect")
-            this.reconnect()
         }else{
             Log.i(javaClass.simpleName, "connection closed successfully")
         }

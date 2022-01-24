@@ -45,7 +45,7 @@ class RestaurantLogin : AppCompatActivity() {
             val role = "restaurant"
             loginRestaurantName = restaurantName
 
-            loginParams.put("restaurant_name", restaurantName)
+            loginParams.put("user_name", restaurantName)
             loginParams.put("password", password)
             loginParams.put("role", role)
 
