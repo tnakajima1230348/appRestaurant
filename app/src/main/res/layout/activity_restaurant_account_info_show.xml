@@ -24,10 +24,10 @@
     <LinearLayout
         android:layout_width="322dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="56dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -41,57 +41,102 @@
             android:visibility="invisible" />
 
         <TextView
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="20dp"
+            android:layout_marginTop="20dp"
             android:text="店名" />
 
         <TextView
             android:id="@+id/textBoxRestaurantName"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:backgroundTint="#efefef"
             android:background="#efefef"
+            android:backgroundTint="#efefef"
             android:paddingTop="3dp"
-            android:textSize="15dp"/>
+            android:textSize="15dp" />
 
 
         <TextView
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="20dp"
+            android:layout_marginTop="20dp"
             android:text="メールアドレス" />
 
         <TextView
             android:id="@+id/textBoxRestaurantEmail"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:backgroundTint="#efefef"
             android:background="#efefef"
+            android:backgroundTint="#efefef"
             android:paddingTop="3dp"
             android:textSize="15dp" />
 
         <TextView
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="20dp"
+            android:layout_marginTop="20dp"
             android:text="住所" />
 
         <TextView
             android:id="@+id/textBoxRestaurantAddress"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:backgroundTint="#efefef"
             android:background="#efefef"
+            android:backgroundTint="#efefef"
             android:paddingTop="3dp"
-            android:textSize="15dp"/>
+            android:textSize="15dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:text="開店時間" />
+
+        <TextView
+            android:id="@+id/textBoxRestaurantTimeOpen"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#efefef"
+            android:backgroundTint="#efefef"
+            android:paddingTop="3dp"
+            android:textSize="15dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:text="閉店時間" />
+
+        <TextView
+            android:id="@+id/textBoxRestaurantTimeColse"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#efefef"
+            android:backgroundTint="#efefef"
+            android:paddingTop="3dp"
+            android:textSize="15dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:text="店舗形態" />
+
+        <TextView
+            android:id="@+id/textBoxRestaurantFeatures"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#efefef"
+            android:backgroundTint="#efefef"
+            android:paddingTop="3dp"
+            android:textSize="15dp" />
 
         <Button
             android:id="@+id/buttonAccountInfoChange"
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="50dp"
             android:backgroundTint="#efefef"
             android:text="アカウント情報変更"
             android:textColor="#555555" />

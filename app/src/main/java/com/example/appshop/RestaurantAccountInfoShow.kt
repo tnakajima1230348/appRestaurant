@@ -40,10 +40,10 @@ class RestaurantAccountInfoShow : AppCompatActivity() {
         val restaurantName = Restaurant.globalRestaurantName
 
         val getInfoParams = JSONObject()
-        getInfoParams.put("searchBy", "user_name")
-        getInfoParams.put("user_name", restaurantName)
+        getInfoParams.put("searchBy", "restaurant_name")
+        getInfoParams.put("restaurant_name", restaurantName)
         getInfoParams.put("token", token)
-        val getInfoRequest = client.createJsonrpcReq("getInfo/user/basic", getRestaurantInfoId, getInfoParams)
+        val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/basic", getRestaurantInfoId, getInfoParams)
 
         //attempt to send until connection established
         Timer().schedule(50, 200) {
@@ -69,10 +69,13 @@ class RestaurantAccountInfoShow : AppCompatActivity() {
         buttonAccountInfoChange.setOnClickListener {
             if(client.isReceived){
                 val intent = Intent(this@RestaurantAccountInfoShow, RestaurantAccountInfoChange::class.java)
-                intent.putExtra("userId", client.restaurantId)
-                intent.putExtra("userName", client.restaurantName)
+                intent.putExtra("restaurantId", client.restaurantId)
+                intent.putExtra("restaurantName", client.restaurantName)
                 intent.putExtra("emailAddr", client.emailAddr)
                 intent.putExtra("address", client.address)
+                intent.putExtra("time_open", client.time_open)
+                intent.putExtra("time_close", client.time_close)
+                intent.putExtra("features", client.features)
                 intent.putExtra("token", token)
                 startActivity(intent)
                 client.close(WsClient.NORMAL_CLOSURE)
@@ -95,42 +98,55 @@ class GetRestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsCl
     var restaurantName = ""
     var emailAddr = ""
     var address = ""
+    var time_open: String = ""
+    var time_close: String = ""
+    var features: String = ""
     var isReceived = false
 
     private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
     private val txtRestaurantName: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantName) }
     private val txtEmail: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantEmail) }
     private val txtAddress: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantAddress) }
+    private val txtTimeOpen: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantTimeOpen) }
+    private val txtTimeClose: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantTimeColse) }
+    private val txtFeatures: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantFeatures) }
 
-    override fun onMessage(message: String?) {
-        super.onMessage(message)
-        Log.i(javaClass.simpleName, "msg arrived")
-        Log.i(javaClass.simpleName, "$message")
+        override fun onMessage(message: String?) {
+            super.onMessage(message)
+            Log.i(javaClass.simpleName, "msg arrived")
+            Log.i(javaClass.simpleName, "$message")
 
-        val wholeMsg = JSONObject("$message")
-        val resId: Int = wholeMsg.getInt("id")
-        val result: JSONObject = wholeMsg.getJSONObject("result")
-        val status: String = result.getString("status")
+            val wholeMsg = JSONObject("$message")
+            val resId: Int = wholeMsg.getInt("id")
+            val result: JSONObject = wholeMsg.getJSONObject("result")
+            val status: String = result.getString("status")
 
-        if (resId == RestaurantAccountInfoShow.getRestaurantInfoId) {
-            this.isReceived = true
-            if (status == "success") {
-                this.restaurantId = result.getInt("user_id")
-                this.restaurantName = result.getString("user_name")
-                this.emailAddr = result.getString("email_addr")
-                this.address = result.getString("address")
+            if (resId == RestaurantAccountInfoShow.getRestaurantInfoId) {
+                this.isReceived = true
+                if (status == "success") {
+                    this.restaurantId = result.getInt("restaurant_id")
+                    this.restaurantName = result.getString("restaurant_name")
+                    this.emailAddr = result.getString("email_addr")
+                    this.address = result.getString("address")
+                    this.time_open = result.getString("time_open")
+                    this.time_close = result.getString("time_close")
+                    this.features = result.getString("features")
 
-                activity.runOnUiThread {
-                    txtRestaurantName.text = this.restaurantName
-                    txtEmail.text = this.emailAddr
-                    txtAddress.text = this.address
-                }
-            } else if (status == "error") {
-                activity.runOnUiThread {
-                    errorDisplay.text = "アカウント情報を取得できません"
-                    errorDisplay.visibility = View.INVISIBLE
+                    activity.runOnUiThread {
+                        txtRestaurantName.text = this.restaurantName
+                        txtEmail.text = this.emailAddr
+                        txtAddress.text = this.address
+                        txtTimeOpen.text = this.time_open
+                        txtTimeClose.text = this.time_close
+                        txtFeatures.text = this.features
+                    }
+                } else if (status == "error") {
+                    activity.runOnUiThread {
+                        errorDisplay.text = "アカウント情報を取得できません"
+                        errorDisplay.visibility = View.INVISIBLE
+                    }
                 }
             }
         }
     }
-}
+

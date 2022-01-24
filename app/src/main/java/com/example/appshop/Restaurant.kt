@@ -18,6 +18,9 @@ class Restaurant : AppCompatActivity() {
     private var restaurant_name: String = ""
     private var email_addr: String = ""
     private var address: String = ""
+    private var time_open: String = ""
+    private var time_close: String = ""
+    private var features: String = ""
 
     companion object{
         const val logoutReqId: Int = 3
@@ -41,6 +44,9 @@ class Restaurant : AppCompatActivity() {
         this.restaurant_name = client.restaurant_name
         this.email_addr = client.email_addr
         this.address = client.address
+        this.time_open = client.time_open
+        this.time_close = client.time_close
+        this.features = client.features
     }
 
     override fun onResume() {
@@ -60,7 +66,7 @@ class Restaurant : AppCompatActivity() {
 
         Log.i(javaClass.simpleName, "token recved ${Restaurant.globalToken}")
         Log.i(javaClass.simpleName, "token expiry ${Restaurant.globalTokenExpiry}")
-        Log.i(javaClass.simpleName, "userName: ${Restaurant.globalRestaurantName}")
+        Log.i(javaClass.simpleName, "restaurantName: ${Restaurant.globalRestaurantName}")
 
         val buttonToHome: Button = findViewById(R.id.buttonHome)
         val buttonToSetting: Button = findViewById(R.id.buttonSetting)
@@ -132,6 +138,9 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
     var restaurant_name: String = ""
     var email_addr: String = ""
     var address: String = ""
+    var time_open: String = ""
+    var time_close: String = ""
+    var features: String = ""
 
     fun isRestaurantInfoArrived(): Boolean{
         if(this.restaurant_id == -1){
@@ -195,10 +204,13 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
             //if msg is about getInfo/restaurant/basic
         }else if(resId == Restaurant.getRestaurantInfoId){
             if(status == "success"){
-                this.restaurant_id = result.getInt("user_id")
-                this.restaurant_name = result.getString("user_name")
+                this.restaurant_id = result.getInt("restaurant_id")
+                this.restaurant_name = result.getString("restaurant_name")
                 this.email_addr = result.getString("email_addr")
                 this.address = result.getString("address")
+                this.time_open = result.getString("time_open")
+                this.time_close = result.getString("time_close")
+                this.features = result.getString("features")
             }else if(status == "error"){
                 Log.i(javaClass.simpleName, "getInfo failed")
             }

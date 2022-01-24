@@ -19,7 +19,7 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
     }
 
     private val uri = WsClient.serverRemote
-    private var client = ChangeUserInfoWsClient(this, uri)
+    private var client = ChangeRestaurantInfoWsClient(this, uri)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,16 +29,22 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         client.connect()
-        val currentRestaurantId = intent.getIntExtra("userId", 0)
-        val currentRestaurantName = intent.getStringExtra("userName")
+        val currentRestaurantId = intent.getIntExtra("restaurantId", 0)
+        val currentRestaurantName = intent.getStringExtra("restaurantName")
         val currentEmail = intent.getStringExtra("emailAddr")
         val currentAddress = intent.getStringExtra("address")
+        val currentTimeOpen = intent.getStringExtra("time_open")
+        val currentTimeClose = intent.getStringExtra("time_close")
+        val currentFeatures = intent.getStringExtra("features")
         val token = Restaurant.globalToken
         var restaurantName = Restaurant.globalRestaurantName
 
         val etxtRestaurantName: EditText = findViewById(R.id.textBoxRestaurantName)
         val etxtRestaurantEmail: EditText = findViewById(R.id.textBoxRestaurantEmail)
         val etxtRestaurantAddress: EditText = findViewById(R.id.textBoxRestaurantAddress)
+        val etxtRestaurantTimeOpen: EditText = findViewById(R.id.textBoxRestaurantTimeOpen)
+        val etxtRestaurantTimeClose: EditText = findViewById(R.id.textBoxRestaurantTimeColse)
+        val etxtRestaurantFeatures: EditText = findViewById(R.id.textBoxRestaurantFeatures)
         val buttonSubmit: Button = findViewById(R.id.buttonSubmit)
         val buttonResign: Button = findViewById(R.id.buttonResign)
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
@@ -46,6 +52,10 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
         etxtRestaurantName.setText(currentRestaurantName)
         etxtRestaurantEmail.setText(currentEmail)
         etxtRestaurantAddress.setText(currentAddress)
+        etxtRestaurantTimeOpen.setText(currentTimeOpen)
+        etxtRestaurantTimeClose.setText(currentTimeClose)
+        etxtRestaurantFeatures.setText(currentFeatures)
+
 
         buttonSubmit.setOnClickListener {
 
@@ -53,6 +63,9 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
             params.put("user_name", etxtRestaurantName.text.toString())
             params.put("email_addr", etxtRestaurantEmail.text.toString())
             params.put("address", etxtRestaurantAddress.text.toString())
+            params.put("time_open", etxtRestaurantTimeOpen.text.toString())
+            params.put("time_close", etxtRestaurantTimeClose.text.toString())
+            params.put("features", etxtRestaurantFeatures.text.toString())
             params.put("token", token)
 
             //restaurantName = etxtRestaurantName.text.toString()
@@ -87,7 +100,7 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
     }
 }
 
-class ChangeUserInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri){
+class ChangeRestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri){
 
     private val errorDisplay: TextView by lazy {
         activity.findViewById(R.id.errorDisplay)
