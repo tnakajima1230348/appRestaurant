@@ -9,7 +9,6 @@ import android.widget.Button
 import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
 import java.net.URI
-import android.widget.TableLayout
 
 
 
@@ -129,7 +128,7 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
     var email_addr: String = ""
     var address: String = ""
 
-    fun isUserInfoArrived(): Boolean{
+    fun isRestaurantInfoArrived(): Boolean{
         if(this.restaurant_id == -1){
             return false
         }
@@ -188,7 +187,7 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
             activity.finish()
             this.close(NORMAL_CLOSURE)
 
-            //if msg is about getInfo/user/basic
+            //if msg is about getInfo/restaurant/basic
         }else if(resId == Restaurant.getRestaurantInfoId){
             if(status == "success"){
                 this.restaurant_id = result.getInt("user_id")

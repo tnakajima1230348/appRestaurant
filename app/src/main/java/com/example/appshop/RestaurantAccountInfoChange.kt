@@ -34,7 +34,7 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
         val currentEmail = intent.getStringExtra("emailAddr")
         val currentAddress = intent.getStringExtra("address")
         val token = Restaurant.globalToken
-        var userName = Restaurant.globalRestaurantName
+        var restaurantName = Restaurant.globalRestaurantName
 
         val etxtRestaurantName: EditText = findViewById(R.id.textBoxRestaurantName)
         val etxtRestaurantEmail: EditText = findViewById(R.id.textBoxRestaurantEmail)
