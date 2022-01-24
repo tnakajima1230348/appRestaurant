@@ -31,7 +31,7 @@ class RestaurantLogin : AppCompatActivity() {
         client.connect()
 
         //edit text, name and password
-        val eTxtUserName: EditText = findViewById(R.id.textBoxUserName)
+        val eTxtRestaurantName: EditText = findViewById(R.id.textBoxRestaurantName)
         val eTxtPassword: EditText = findViewById(R.id.textBoxPassword)
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
 
@@ -40,11 +40,12 @@ class RestaurantLogin : AppCompatActivity() {
         //eventListener
         buttonLogin.setOnClickListener {
             val loginParams = JSONObject()
-            val userName: String = eTxtUserName.text.toString()
+            val restaurantName: String = eTxtRestaurantName.text.toString()
             val password: String = eTxtPassword.text.toString()
             val role = "restaurant"
+            loginRestaurantName = restaurantName
 
-            loginParams.put("user_name", userName)
+            loginParams.put("restaurant_name", restaurantName)
             loginParams.put("password", password)
             loginParams.put("role", role)
 
@@ -104,6 +105,9 @@ class LoginWsClient(private val activity: Activity, uri: URI) : WsClient(uri){
                 this.close(NORMAL_CLOSURE)
                 activity.runOnUiThread{
                     val intent = Intent(activity, Restaurant::class.java)
+                    Restaurant.globalToken = token
+                    Restaurant.globalRestaurantName = RestaurantLogin.loginRestaurantName
+                    Restaurant.globalTokenExpiry = expire
                     activity.startActivity(intent)
                 }
 
