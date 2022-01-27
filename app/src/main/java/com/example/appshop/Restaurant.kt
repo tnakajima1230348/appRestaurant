@@ -24,6 +24,7 @@ class Restaurant : AppCompatActivity() {
 
     companion object{
         const val logoutReqId: Int = 3
+        const val getReviewInfoId: Int = 6
         const val getRestaurantInfoId: Int = 7
         var globalToken = ""
         var globalRestauarntId = -1
@@ -74,6 +75,7 @@ class Restaurant : AppCompatActivity() {
         val buttonToReserve: Button = findViewById(R.id.buttonReserve)
         val buttonLogout: Button = findViewById(R.id.buttonLogout)
         val buttonToCalender: Button = findViewById(R.id.buttonCalender)
+        val buttonReview: Button = findViewById(R.id.buttonReview)
 
         //bottom footer event listeners
         buttonToHome.setOnClickListener {
@@ -98,6 +100,27 @@ class Restaurant : AppCompatActivity() {
 
         buttonToCalender.setOnClickListener {
             TODO("not yet implemented")
+        }
+
+        buttonReview.setOnClickListener {
+            val shopId = globalRestauarntId
+            val token = globalToken
+
+            val getInfoParams = JSONObject()
+            getInfoParams.put("restaurant_id", shopId)
+            getInfoParams.put("token", token)
+            val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/evaluations", getReviewInfoId, getInfoParams)
+            try {
+                if (client.isClosed) {
+                    client.reconnect()
+                }
+                client.send(getInfoRequest.toString())
+                //errorDisplay.text = "情報取得中..."
+                //errorDisplay.visibility = View.VISIBLE
+            } catch (ex: Exception) {
+                Log.i(javaClass.simpleName, "send failed")
+                Log.i(javaClass.simpleName, "$ex")
+            }
         }
 
         buttonLogout.setOnClickListener {
@@ -176,6 +199,25 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
+
+        //if message is about reviewManagement
+        if(resId == Restaurant.getReviewInfoId){
+            if(status == "success"){
+                val intent = Intent(activity, ShowRestaurantReservations::class.java) //画面遷移
+                intent.putExtra("shopId", result.getInt("restaurant_id"))
+                intent.putExtra("message1", result.getString("evaluation_grade"))
+                intent.putExtra("message2", result.getString("evaluation_comment"))
+                activity.startActivity(intent)
+                this.close(WsClient.NORMAL_CLOSURE)
+
+            }else if(status == "error"){
+                Log.i(javaClass.simpleName, "no user matched")
+                activity.runOnUiThread{
+                    //errorDisplay.text = "アカウント情報を取得できません"
+                    //errorDisplay.visibility = View.INVISIBLE
+                }
+            }
+        }
 
         //if message is about logout
         if(resId == Restaurant.logoutReqId){
