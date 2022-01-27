@@ -1,139 +1,161 @@
 package com.example.appshop
 
-import android.graphics.Color
-import android.util.TypedValue
-import android.view.Gravity
-import android.widget.TableLayout
-import android.widget.TableRow
+import android.app.Activity
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
-import java.lang.String
+import org.json.JSONArray
+import org.json.JSONObject
+import java.lang.Exception
+import java.net.URI
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
+class RestaurantSeatShow : AppCompatActivity() {
 
-fun loadData(mTableLayout: Any) {
-    val leftRowMargin = 0
-    val topRowMargin = 0
-    val rightRowMargin = 0
-    val bottomRowMargin = 0
-    var textSize = 0
-    var smallTextSize = 0
-    var mediumTextSize = 0
-    "20dp".also { textSize = it }
-    "20dp".also { smallTextSize = it }
-    "20dp".also { mediumTextSize = it }
-    val players = Player()
-    val data: Array<PlayerData> = players.getPlayers()
-    val rows = data.size
-    var textSpacer: TextView? = null
+    companion object{
+        const val getSeatInfoId: Int = 8
+    }
 
-    // -1 はヘッダー行
-    for (i in -1 until rows) {
-        var row: PlayerData? = null
-        if (i > -1) row = data[i] else {
-            textSpacer = TextView(this)
-            textSpacer.text = ""
-        }
-        // 1列目(No)
-        val tv = TextView(this)
-        tv.layoutParams = TableRow.LayoutParams(
-            TableRow.LayoutParams.WRAP_CONTENT,
-            TableRow.LayoutParams.WRAP_CONTENT
-        )
-        tv.gravity = Gravity.LEFT
-        tv.setPadding(5, 15, 0, 15)
-        if (i == -1) {
-            tv.text = "No"
-            tv.setBackgroundColor(Color.parseColor("#f0f0f0"))
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSize.toFloat())
-        } else {
-            tv.setText(String.valueOf(row.getNo()))
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat())
-        }
-        // 2列目(Name)
-        val tv2 = TextView(this)
-        tv2.layoutParams = TableRow.LayoutParams(
-            TableRow.LayoutParams.WRAP_CONTENT,
-            TableRow.LayoutParams.WRAP_CONTENT
-        )
-        tv2.gravity = Gravity.LEFT
-        tv2.setPadding(5, 15, 0, 15)
-        if (i == -1) {
-            tv2.text = "Name"
-            tv2.setBackgroundColor(Color.parseColor("#f0f0f0"))
-            tv2.setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSize.toFloat())
-        } else {
-            tv2.setText(row.getName())
-        }
-        // 3列目(Position)
-        val tv3 = TextView(this)
-        tv3.layoutParams = TableRow.LayoutParams(
-            TableRow.LayoutParams.WRAP_CONTENT,
-            TableRow.LayoutParams.WRAP_CONTENT
-        )
-        tv3.gravity = Gravity.LEFT
-        tv3.setPadding(5, 15, 0, 15)
-        if (i == -1) {
-            tv3.text = "Position"
-            tv3.setBackgroundColor(Color.parseColor("#f0f0f0"))
-            tv3.setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSize.toFloat())
-        } else {
-            tv3.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat())
-            tv3.setText(row.getPosition())
-        }
-        // 4列目(Birth)
-        val tv4 = TextView(this)
-        tv4.layoutParams = TableRow.LayoutParams(
-            TableRow.LayoutParams.WRAP_CONTENT,
-            TableRow.LayoutParams.WRAP_CONTENT
-        )
-        tv4.gravity = Gravity.LEFT
-        tv4.setPadding(5, 15, 0, 15)
-        if (i == -1) {
-            tv4.text = "Birth"
-            tv4.setBackgroundColor(Color.parseColor("#f0f0f0"))
-            tv4.setTextSize(TypedValue.COMPLEX_UNIT_PX, smallTextSize.toFloat())
+    private val uri = WsClient.serverRemote
+    private var client = RestaurantInfoWsClient(this, uri)
 
-            // テーブルに行を追加
-            val tr = TableRow(this)
-            tr.id = i + 1
-            val trParams = TableLayout.LayoutParams(
-                TableLayout.LayoutParams.MATCH_PARENT,
-                TableLayout.LayoutParams.WRAP_CONTENT
-            )
-            trParams.setMargins(leftRowMargin, topRowMargin, rightRowMargin, bottomRowMargin)
-            tr.setPadding(0, 0, 0, 0)
-            tr.layoutParams = trParams
-            tr.addView(tv)
-            tr.addView(tv2)
-            tr.addView(tv3)
-            tr.addView(tv4)
-            mTableLayout.addView(tr, trParams)
-            // 罫線を追加
-            if (i > -1) {
-                val trSep = TableRow(this)
-                val trParamsSep = TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT
-                )
-                trParamsSep.setMargins(leftRowMargin, topRowMargin, rightRowMargin, bottomRowMargin)
-                trSep.layoutParams = trParamsSep
-                val tvSep = TextView(this)
-                val tvSepLay = TableRow.LayoutParams(
-                    TableRow.LayoutParams.MATCH_PARENT,
-                    TableRow.LayoutParams.WRAP_CONTENT
-                )
-                tvSepLay.span = 4
-                tvSep.layoutParams = tvSepLay
-                tvSep.setBackgroundColor(Color.parseColor("#d9d9d9"))
-                tvSep.height = 1
-                trSep.addView(tvSep)
-                mTableLayout.addView(trSep, trParamsSep)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_restaurant_seat_show)
+        client.connect()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val errorDisplay: TextView = findViewById(R.id.errorDisplay)
+
+        val token = Restaurant.globalToken
+        val restaurantId = Restaurant.globalRestaurantId
+
+        val getInfoParams = JSONObject()
+        getInfoParams.put("restaurant_id", restaurantId)
+        getInfoParams.put("token", token)
+        val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/basic", getSeatInfoId, getInfoParams)
+
+        //attempt to send until connection established
+        Timer().schedule(50, 200) {
+            Log.i(javaClass.simpleName, "set req ${getInfoRequest.toString()}")
+            try {
+                if (client.isClosed) {
+                    client.reconnect()
+                }
+                client.send(getInfoRequest.toString())
+                errorDisplay.text = "情報取得中..."
+                errorDisplay.visibility = View.VISIBLE
+            } catch (ex: Exception) {
+                Log.i(javaClass.simpleName, "send failed")
+                Log.i(javaClass.simpleName, "$ex")
+            }
+            // if msg arrived
+            if(client.isReceived){
+                errorDisplay.visibility = View.INVISIBLE
+                this.cancel()
+            }
+        }
+
+        val wholeMsg = JSONObject()
+        val result: JSONObject = wholeMsg.getJSONObject("result")
+        val seats:JSONArray = result.getJSONArray("seats")
+        val names = arrayOf<String>()
+
+        for (seat in seats){
+            names[seat.index] = seat.getString("seat_name")
+        }
+
+        buttonAccountInfoChange.setOnClickListener {
+            if(client.isReceived){
+                val intent = Intent(this@RestaurantAccountInfoShow, RestaurantAccountInfoChange::class.java)
+                intent.putExtra("restaurantId", client.restaurantId)
+                intent.putExtra("restaurantName", client.restaurantName)
+                intent.putExtra("emailAddr", client.emailAddr)
+                intent.putExtra("address", client.address)
+                intent.putExtra("time_open", client.time_open)
+                intent.putExtra("time_close", client.time_close)
+                intent.putExtra("features", client.features)
+                intent.putExtra("token", token)
+                startActivity(intent)
+                client.close(WsClient.NORMAL_CLOSURE)
+            }else{
+                return@setOnClickListener
             }
         }
     }
+
+    override fun onRestart() {
+        super.onRestart()
+        client = RestaurantInfoWsClient(this, uri)
+    }
+
+
 }
 
-private fun Any.addView(tr: TableRow, trParams: TableLayout.LayoutParams) {
+class RestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
+    var restaurantId: Int = -1
+    var restaurantName = ""
+    var emailAddr = ""
+    var address = ""
+    var time_open: String = ""
+    var time_close: String = ""
+    var features: String = ""
+    var isReceived = false
 
+    private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
+    private val txtRestaurantName: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantName) }
+    private val txtEmail: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantEmail) }
+    private val txtAddress: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantAddress) }
+    private val txtTimeOpen: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantTimeOpen) }
+    private val txtTimeClose: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantTimeColse) }
+    private val txtFeatures: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantFeatures) }
+
+    override fun onMessage(message: String?) {
+        super.onMessage(message)
+        Log.i(javaClass.simpleName, "msg arrived")
+        Log.i(javaClass.simpleName, "$message")
+
+        val wholeMsg = JSONObject("$message")
+        val resId: Int = wholeMsg.getInt("id")
+        val result: JSONObject = wholeMsg.getJSONObject("result")
+        val status: String = result.getString("status")
+
+        if (resId == RestaurantAccountInfoShow.getRestaurantInfoId) {
+            this.isReceived = true
+            if (status == "success") {
+                this.restaurantId = result.getInt("restaurant_id")
+                this.restaurantName = result.getString("restaurant_name")
+                this.emailAddr = result.getString("email_addr")
+                this.address = result.getString("address")
+                this.time_open = result.getString("time_open")
+                this.time_close = result.getString("time_close")
+                this.features = result.getString("features")
+
+                activity.runOnUiThread {
+                    txtRestaurantName.text = this.restaurantName
+                    txtEmail.text = this.emailAddr
+                    txtAddress.text = this.address
+                    txtTimeOpen.text = this.time_open
+                    txtTimeClose.text = this.time_close
+                    txtFeatures.text = this.features
+                }
+            } else if (status == "error") {
+                activity.runOnUiThread {
+                    errorDisplay.text = "アカウント情報を取得できません"
+                    errorDisplay.visibility = View.INVISIBLE
+                }
+            }
+        }
+    }
 }
 
 

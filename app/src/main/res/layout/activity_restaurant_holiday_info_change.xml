@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f5e131"
-    tools:context=".RestaurantAccountInfoShow">
+    tools:context=".RestaurantHolidayInfoChange">
 
 
     <TextView
@@ -15,7 +15,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:text="カレンダー"
+        android:text="休日情報変更"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,26 +24,45 @@
     <LinearLayout
         android:layout_width="322dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="56dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <CalendarView
-            android:id="@+id/calendarView"
+        <TextView
+            android:id="@+id/errorDisplay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="23dp"
+            android:layout_marginTop="50dp"
+            android:text="アカウント情報が取得できませんでした"
+            android:textColor="#ff0000"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:text="年月日" />
+
+        <TextView
+            android:id="@+id/textBoxRestaurantDay"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#efefef"
+            android:backgroundTint="#efefef"
+            android:paddingTop="3dp"
+            android:textSize="15dp" />
 
         <Button
             android:id="@+id/buttonAccountAddHoliday"
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="50dp"
             android:backgroundTint="#efefef"
-            android:text="休日追加"
+            android:text="休日情報追加"
             android:textColor="#555555" />
 
         <Button
@@ -51,9 +70,9 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:backgroundTint="#efefef"
-            android:text="休日削除"
+            android:text="休日情報削除"
             android:textColor="#555555" />
 
     </LinearLayout>

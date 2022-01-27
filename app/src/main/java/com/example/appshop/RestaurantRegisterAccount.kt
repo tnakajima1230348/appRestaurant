@@ -57,7 +57,7 @@ class RestaurantRegisterAccount : AppCompatActivity() {
 
             registerParams.put("restaurant_name", restaurantName)
             registerParams.put("password", password)
-            val registerRequest = client.createJsonrpcReq("register/user", registerReqId, registerParams)
+            val registerRequest = client.createJsonrpcReq("register/restaurant", registerReqId, registerParams)
 
 
             Log.i(javaClass.simpleName, "send register req")
@@ -123,7 +123,7 @@ class RegisterWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
             }else if(status == "error"){
                 val reason: String = result.getString("reason")
                 activity.runOnUiThread{
-                    if(reason == "restaurant_name has already taken by other user"){
+                    if(reason == "restaurant_name has already taken by other restaurant"){
                         errorDisplay.text = "店名が重複しています"
                     }else{
                         errorDisplay.text = reason

@@ -70,7 +70,7 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
 
             //restaurantName = etxtRestaurantName.text.toString()
 
-            val request = client.createJsonrpcReq("updateInfo/user/basic", changeRestaurantInfoId, params)
+            val request = client.createJsonrpcReq("updateInfo/restaurant/basic", changeRestaurantInfoId, params)
 
             try {
                 if (client.isClosed) {

@@ -27,7 +27,7 @@ class Restaurant : AppCompatActivity() {
         const val getReviewInfoId: Int = 6
         const val getRestaurantInfoId: Int = 7
         var globalToken = ""
-        var globalRestauarntId = -1
+        var globalRestaurantId = -1
         var globalRestaurantName = ""
         var globalTokenExpiry = ""
     }
@@ -99,7 +99,10 @@ class Restaurant : AppCompatActivity() {
         }
 
         buttonToCalender.setOnClickListener {
-            TODO("not yet implemented")
+            val intent = Intent(this@Restaurant, RestaurantCalendar::class.java)
+            intent.putExtra("token", Restaurant.globalToken)
+            startActivity(intent)
+            client.close(WsClient.NORMAL_CLOSURE)
         }
 
         buttonReview.setOnClickListener {
