@@ -26,7 +26,7 @@ class Restaurant : AppCompatActivity() {
         const val logoutReqId: Int = 3
         const val getRestaurantInfoId: Int = 7
         var globalToken = ""
-        var globalRestauarntId = -1
+        var globalRestaurantId = -1
         var globalRestaurantName = ""
         var globalTokenExpiry = ""
     }
