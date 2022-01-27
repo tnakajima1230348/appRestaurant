@@ -65,6 +65,7 @@ class Restaurant : AppCompatActivity() {
         }
         Thread( getRestaurantInfo ).start()
 
+        Log.i(javaClass.simpleName, "restaurantId ${Restaurant.globalRestaurantId}")
         Log.i(javaClass.simpleName, "token recved ${Restaurant.globalToken}")
         Log.i(javaClass.simpleName, "token expiry ${Restaurant.globalTokenExpiry}")
         Log.i(javaClass.simpleName, "restaurantName: ${Restaurant.globalRestaurantName}")
@@ -106,7 +107,7 @@ class Restaurant : AppCompatActivity() {
         }
 
         buttonReview.setOnClickListener {
-            val shopId = globalRestauarntId
+            val shopId = globalRestaurantId
             val token = globalToken
 
             val getInfoParams = JSONObject()
