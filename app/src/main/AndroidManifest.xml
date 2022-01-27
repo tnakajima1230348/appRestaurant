@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppShop">
         <activity
+            android:name=".RestaurantCalendar"
+            android:exported="false" />
+        <activity
             android:name=".RestaurantAccountInfoShow"
             android:exported="false" />
         <activity

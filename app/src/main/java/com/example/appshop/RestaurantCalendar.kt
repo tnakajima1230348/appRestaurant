@@ -6,9 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import android.widget.CalendarView
+import android.widget.*
 import org.json.JSONObject
 import java.lang.Exception
 import java.net.URI
@@ -18,11 +16,12 @@ import kotlin.concurrent.schedule
 class RestaurantCalendar : AppCompatActivity() {
 
     companion object{
-        const val getRestaurantInfoId: Int = 6
+        const val getHolidayInfoId: Int = 6
+        const val changeHolidayInfoId: Int = 7
     }
 
     private val uri = WsClient.serverRemote
-    private var client = GetHolidayWsClient(this, uri)
+    private var client = HolidayInfoWsClient(this, uri)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,73 +35,82 @@ class RestaurantCalendar : AppCompatActivity() {
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
         val buttonAccountAddHoliday: Button = findViewById(R.id.buttonAccountAddHoliday)
         val buttonAccountDeleteHoliday: Button = findViewById(R.id.buttonAccountDeleteHoliday)
-        val calenderView: CalendarView = findViewById(R.id.calendarView)
 
         val token = Restaurant.globalToken
         val restaurantName = Restaurant.globalRestaurantName
 
-        val getInfoParams = JSONObject()
-        getInfoParams.put("searchBy", "user_name")
-        getInfoParams.put("user_name", restaurantName)
-        getInfoParams.put("token", token)
-        val getInfoRequest = client.createJsonrpcReq("getInfo/user/basic", getRestaurantInfoId, getInfoParams)
+        //val getInfoParams = JSONObject()
+        //getInfoParams.put("searchBy", "restaurant_name")
+        //getInfoParams.put("restaurant_name", restaurantName)
+        //getInfoParams.put("token", token)
+        //val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/basic", getHolidayInfoId, getInfoParams)
 
         //attempt to send until connection established
-        Timer().schedule(50, 200) {
-            Log.i(javaClass.simpleName, "set req ${getInfoRequest.toString()}")
-            try {
-                if (client.isClosed) {
-                    client.reconnect()
-                }
-                client.send(getInfoRequest.toString())
-                errorDisplay.text = "情報取得中..."
-                errorDisplay.visibility = View.VISIBLE
-            } catch (ex: Exception) {
-                Log.i(javaClass.simpleName, "send failed")
-                Log.i(javaClass.simpleName, "$ex")
-            }
-            // if msg arrived
-            if(client.isReceived){
-                errorDisplay.visibility = View.INVISIBLE
-                this.cancel()
-            }
-        }
 
-        buttonAccountInfoChange.setOnClickListener {
-            if(client.isReceived){
-                val intent = Intent(this@RestaurantAccountInfoShow, RestaurantAccountInfoChange::class.java)
-                intent.putExtra("userId", client.restaurantId)
-                intent.putExtra("userName", client.restaurantName)
-                intent.putExtra("emailAddr", client.emailAddr)
-                intent.putExtra("address", client.address)
-                intent.putExtra("token", token)
-                startActivity(intent)
-                client.close(WsClient.NORMAL_CLOSURE)
-            }else{
-                return@setOnClickListener
+        val calenderView: CalendarView = findViewById(R.id.calendarView)
+        calenderView.date = System.currentTimeMillis()
+
+        calenderView.setOnDateChangeListener{ view, year, month, dayOfMonth ->
+            val date = "$year/$month/$dayOfMonth"
+
+            buttonAccountAddHoliday.setOnClickListener {
+                val params = JSONObject()
+                params.put("holidays", date)
+                params.put("type", "new")
+                params.put("token", token)
+
+                val request = client.createJsonrpcReq("updateInfo/restaurant/basic",
+                    changeHolidayInfoId, params)
+
+                try {
+                    if (client.isClosed) {
+                        client.reconnect()
+                    }
+                    client.send(request.toString())
+                } catch (ex: Exception) {
+                    Log.i(javaClass.simpleName, "send failed")
+                    Log.i(javaClass.simpleName, "$ex")
+                    errorDisplay.text = "インターネットに接続されていません"
+                    errorDisplay.visibility = View.VISIBLE
+                }
             }
+
+            buttonAccountDeleteHoliday.setOnClickListener {
+                val params = JSONObject()
+                params.put("holidays", date)
+                params.put("type", "delete")
+                params.put("token", token)
+
+                val request = client.createJsonrpcReq("updateInfo/restaurant/basic",
+                    changeHolidayInfoId, params)
+
+                try {
+                    if (client.isClosed) {
+                        client.reconnect()
+                    }
+                    client.send(request.toString())
+                } catch (ex: Exception) {
+                    Log.i(javaClass.simpleName, "send failed")
+                    Log.i(javaClass.simpleName, "$ex")
+                    errorDisplay.text = "インターネットに接続されていません"
+                    errorDisplay.visibility = View.VISIBLE
+                }
+            }
+
         }
     }
 
     override fun onRestart() {
         super.onRestart()
-        client = GetRestaurantInfoWsClient(this, uri)
+        client = HolidayInfoWsClient(this, uri)
     }
-
 
 }
 
-class GetRestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
-    var restaurantId: Int = -1
-    var restaurantName = ""
-    var emailAddr = ""
-    var address = ""
-    var isReceived = false
-
-    private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
-    private val txtRestaurantName: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantName) }
-    private val txtEmail: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantEmail) }
-    private val txtAddress: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantAddress) }
+class HolidayInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
+    private val errorDisplay: TextView by lazy {
+        activity.findViewById(R.id.errorDisplay)
+    }
 
     override fun onMessage(message: String?) {
         super.onMessage(message)
@@ -114,25 +122,22 @@ class GetRestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsCl
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
 
-        if (resId == RestaurantAccountInfoShow.getRestaurantInfoId) {
-            this.isReceived = true
-            if (status == "success") {
-                this.restaurantId = result.getInt("user_id")
-                this.restaurantName = result.getString("user_name")
-                this.emailAddr = result.getString("email_addr")
-                this.address = result.getString("address")
+        if(resId == RestaurantCalendar.changeHolidayInfoId){
+            if(status == "success"){
+                val intent = Intent(activity, ShowResult::class.java)
+                intent.putExtra("message", "休日情報を変更しました")
+                intent.putExtra("transitionBtnMessage", "ホームへ")
+                intent.putExtra("isBeforeLogin", false)
+                this.close(NORMAL_CLOSURE)
+                activity.startActivity(intent)
 
-                activity.runOnUiThread {
-                    txtRestaurantName.text = this.restaurantName
-                    txtEmail.text = this.emailAddr
-                    txtAddress.text = this.address
-                }
-            } else if (status == "error") {
-                activity.runOnUiThread {
-                    errorDisplay.text = "アカウント情報を取得できません"
-                    errorDisplay.visibility = View.INVISIBLE
+            }else if(status == "error"){
+                activity.runOnUiThread{
+                    errorDisplay.text = result.getString("reason")
+                    errorDisplay.visibility = View.VISIBLE
                 }
             }
         }
+
     }
 }

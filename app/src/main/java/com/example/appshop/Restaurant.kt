@@ -97,7 +97,10 @@ class Restaurant : AppCompatActivity() {
         }
 
         buttonToCalender.setOnClickListener {
-            TODO("not yet implemented")
+            val intent = Intent(this@Restaurant, RestaurantCalendar::class.java)
+            intent.putExtra("token", Restaurant.globalToken)
+            startActivity(intent)
+            client.close(WsClient.NORMAL_CLOSURE)
         }
 
         buttonLogout.setOnClickListener {
