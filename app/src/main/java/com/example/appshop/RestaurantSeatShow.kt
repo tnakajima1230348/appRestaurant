@@ -19,6 +19,7 @@ class RestaurantSeatShow : AppCompatActivity() {
 
     companion object{
         const val getSeatInfoId: Int = 10
+        var arrayIndex: Int = -1
     }
 
     private val uri = WsClient.serverRemote
@@ -37,7 +38,7 @@ class RestaurantSeatShow : AppCompatActivity() {
         val buttonSeatInfoChange: Button = findViewById(R.id.buttonSeatInfoChange)
 
 
-        val arrayIndex = intent.getIntExtra("arrayIndex", 0)
+        arrayIndex = intent.getIntExtra("arrayIndex", 0)
         val token = Restaurant.globalToken
         val restaurantId = Restaurant.globalRestaurantId
 
