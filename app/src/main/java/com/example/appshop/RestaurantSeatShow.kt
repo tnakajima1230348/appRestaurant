@@ -18,7 +18,7 @@ import kotlin.concurrent.schedule
 class RestaurantSeatShow : AppCompatActivity() {
 
     companion object{
-        const val getSeatInfoId: Int = 8
+        const val getSeatInfoId: Int = 10
     }
 
     private val uri = WsClient.serverRemote
@@ -69,14 +69,16 @@ class RestaurantSeatShow : AppCompatActivity() {
 
         buttonSeatInfoChange.setOnClickListener {
             if(client.isReceived){
-                val intent = Intent(this@RestaurantSeatShow, RestaurantSeatInfoChange::class.java)
+                val intent = Intent(this@RestaurantSeatShow, RestaurantSeatShow::class.java)
+                intent.putExtra("seatId", client.seatId)
+                intent.putExtra("seatName", client.seatName)
                 intent.putExtra("restaurantId", client.restaurantId)
-                intent.putExtra("restaurantName", client.restaurantName)
-                intent.putExtra("emailAddr", client.emailAddr)
-                intent.putExtra("address", client.address)
-                intent.putExtra("time_open", client.time_open)
-                intent.putExtra("time_close", client.time_close)
-                intent.putExtra("features", client.features)
+                intent.putExtra("capacity", client.capacity)
+                intent.putExtra("is_filled", client.isFilled)
+                intent.putExtra("time_start", client.timeStart)
+                intent.putExtra("staying_times", client.stayingTimes)
+                intent.putExtra("avg_staying_time", client.avgStayTime)
+                intent.putExtra("feature", client.feature)
                 intent.putExtra("token", token)
                 startActivity(intent)
                 client.close(WsClient.NORMAL_CLOSURE)
@@ -88,7 +90,7 @@ class RestaurantSeatShow : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        client = RestaurantInfoWsClient(this, uri)
+        client = SeatInfoWsClient(this, uri)
     }
 
 
@@ -100,19 +102,21 @@ class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
     var restaurantId: Int = -1
     var capacity = ""
     var isFilled: Boolean = false
+    var fill = "空"
     var timeStart = ""
-    var stayingTime: String = ""
+    var stayingTimes: String = ""
     var avgStayTime: String = ""
     var feature: String = ""
     var isReceived = false
 
     private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
-    private val txtRestaurantName: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantName) }
-    private val txtEmail: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantEmail) }
-    private val txtAddress: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantAddress) }
-    private val txtTimeOpen: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantTimeOpen) }
-    private val txtTimeClose: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantTimeColse) }
-    private val txtFeatures: TextView by lazy { activity.findViewById(R.id.textBoxRestaurantFeatures) }
+    private val txtSeatName: TextView by lazy { activity.findViewById(R.id.textBoxSeatName) }
+    private val txtCapacity: TextView by lazy { activity.findViewById(R.id.textBoxCapacity) }
+    private val txtIsFilled: TextView by lazy { activity.findViewById(R.id.textBoxIsFilled) }
+    private val txtTimeStart: TextView by lazy { activity.findViewById(R.id.textBoxTimeStart) }
+    private val txtStayingTimes: TextView by lazy { activity.findViewById(R.id.textBoxStayingTime) }
+    private val txtavgStayTime: TextView by lazy { activity.findViewById(R.id.textBoxAvgStayingTime) }
+    private val txtFeature: TextView by lazy { activity.findViewById(R.id.textBoxSeatFeature) }
 
     override fun onMessage(message: String?) {
         super.onMessage(message)
@@ -127,28 +131,37 @@ class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
         val seat: JSONObject = seats.getJSONObject(RestaurantSeatShow.arrayIndex)
 
 
-        if (resId == RestaurantAccountInfoShow.getRestaurantInfoId) {
+        if (resId == RestaurantSeatShow.getSeatInfoId) {
             this.isReceived = true
             if (status == "success") {
-                this.restaurantId = result.getInt("restaurant_id")
-                this.restaurantName = result.getString("restaurant_name")
-                this.emailAddr = result.getString("email_addr")
-                this.address = result.getString("address")
-                this.time_open = result.getString("time_open")
-                this.time_close = result.getString("time_close")
-                this.features = result.getString("features")
+                this.seatId = seat.getInt("seat_id")
+                this.seatName = seat.getString("seat_name")
+                this.restaurantId = seat.getInt("restaurant_id")
+                this.capacity = seat.getString("capacity")
+                this.isFilled = seat.getBoolean("is_filled")
+                this.timeStart = seat.getString("time_start")
+                this.stayingTimes = seat.getString("staying_times")
+                this.avgStayTime = seat.getString("avg_staying_time")
+                this.feature = seat.getString("feature")
 
                 activity.runOnUiThread {
-                    txtRestaurantName.text = this.restaurantName
-                    txtEmail.text = this.emailAddr
-                    txtAddress.text = this.address
-                    txtTimeOpen.text = this.time_open
-                    txtTimeClose.text = this.time_close
-                    txtFeatures.text = this.features
+                    txtSeatName.text = this.seatName
+                    txtCapacity.text = this.capacity
+                    txtTimeStart.text = this.timeStart
+                    txtStayingTimes.text = this.stayingTimes
+                    txtavgStayTime.text = this.avgStayTime
+                    txtFeature.text = this.feature
+
+                    if(this.isFilled == true) {
+                        txtIsFilled.text = this.fill
+                    } else {
+                        this.fill = "満"
+                        txtIsFilled.text = this.fill
+                    }
                 }
             } else if (status == "error") {
                 activity.runOnUiThread {
-                    errorDisplay.text = "アカウント情報を取得できません"
+                    errorDisplay.text = "座席情報を取得できません"
                     errorDisplay.visibility = View.INVISIBLE
                 }
             }

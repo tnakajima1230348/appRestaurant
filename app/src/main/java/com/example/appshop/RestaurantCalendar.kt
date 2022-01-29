@@ -16,8 +16,7 @@ import kotlin.concurrent.schedule
 class RestaurantCalendar : AppCompatActivity() {
 
     companion object{
-        const val getHolidayInfoId: Int = 6
-        const val changeHolidayInfoId: Int = 6
+        const val changeHolidayInfoId: Int = 8
     }
 
     private val uri = WsClient.serverRemote

@@ -22,7 +22,7 @@ import kotlin.concurrent.schedule
 class RestaurantSeatList : AppCompatActivity() {
 
     companion object{
-        const val getSeatInfoId: Int = 8
+        const val getSeatInfoId: Int = 9
     }
 
     private val uri = WsClient.serverRemote
