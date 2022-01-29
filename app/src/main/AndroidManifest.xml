@@ -16,7 +16,16 @@
             android:name=".RestaurantSearchReview"
             android:exported="false" />
         <activity
-            android:name=".ShowRestaurantReservations"
+            android:name=".ShowRestaurantReview"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantCalendar"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantSeatList"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantSeatShow"
             android:exported="false" />
         <activity
             android:name=".RestaurantAccountInfoShow"

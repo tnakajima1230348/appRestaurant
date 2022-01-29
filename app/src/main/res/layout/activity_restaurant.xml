@@ -50,18 +50,6 @@
             android:padding="0dp"
             android:text="座席"
             android:textSize="15sp" />
-
-        <Button
-            android:id="@+id/buttonReserve"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="1dp"
-            android:layout_marginRight="1dp"
-            android:layout_weight="1"
-            android:backgroundTint="#eb4242"
-            android:padding="0dp"
-            android:text="予約"
-            android:textSize="15sp" />
     </LinearLayout>
 
     <TextView
@@ -100,10 +88,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
+            android:id="@+id/buttonAddSeat"
+            android:layout_width="300dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:layout_height="60dp"
+            android:backgroundTint="#eb4242"
+            android:text="座席追加" />
+
+        <Button
             android:id="@+id/buttonCalender"
             android:layout_width="300dp"
             android:layout_gravity="center"
-            android:layout_marginTop="250dp"
             android:layout_height="60dp"
             android:backgroundTint="#eb4242"
             android:text="カレンダー" />

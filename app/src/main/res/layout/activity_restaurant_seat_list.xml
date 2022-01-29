@@ -5,18 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f5e131"
-    tools:context=".RestaurantSeatShow">
+    tools:context=".RestaurantSeatList">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ListView
-            android:id="@+id/list_view"
+            android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
 
+        </ListView>
+
+        <Button
+            android:id="@+id/buttonAddSeat"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:backgroundTint="#efefef"
+            android:text="座席追加"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/errorDisplay"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="100dp"
+            android:text="座席情報が取得できませんでした"
+            android:textColor="#ff0000"
+            android:visibility="invisible" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

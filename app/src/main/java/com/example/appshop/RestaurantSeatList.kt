@@ -43,6 +43,7 @@ class RestaurantSeatList : AppCompatActivity() {
         val restaurantId = Restaurant.globalRestaurantId
 
         val getInfoParams = JSONObject()
+        getInfoParams.put("searchBy", "restaurant_id")
         getInfoParams.put("restaurant_id", restaurantId)
         getInfoParams.put("token", token)
         val getInfoRequest =
@@ -69,20 +70,20 @@ class RestaurantSeatList : AppCompatActivity() {
             }
         }
 
-        val wholeMsg = JSONObject()
-        val result: JSONObject = wholeMsg.getJSONObject("result")
+        val result: JSONObject = getInfoParams.getJSONObject("result")
         val seats: JSONArray = result.getJSONArray("seats")
-        val names = arrayOf<String>()
+        val number = arrayOf<Int>()
+        var i: Int = 1
 
         for (index in 0 until seats.length()) {
-            val seat: JSONObject = seats.getJSONObject(index)
-            names[index] = seat.getString("seat_name")
+            number[index] = i
+            ++i
         }
 
-        val listView = findViewById<ListView>(R.id.list_view)
+        val listView = findViewById<ListView>(R.id.listView)
 
         //ArrayAdapter
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names)
+        val adapter = ArrayAdapter<Int>(this, android.R.layout.simple_list_item_1, number)
 
         listView.adapter = adapter
 

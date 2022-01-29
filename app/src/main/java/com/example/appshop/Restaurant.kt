@@ -73,22 +73,14 @@ class Restaurant : AppCompatActivity() {
         val buttonToHome: Button = findViewById(R.id.buttonHome)
         val buttonToSetting: Button = findViewById(R.id.buttonSetting)
         val buttonToSeat: Button = findViewById(R.id.buttonSeat)
-        val buttonToReserve: Button = findViewById(R.id.buttonReserve)
         val buttonLogout: Button = findViewById(R.id.buttonLogout)
         val buttonToCalender: Button = findViewById(R.id.buttonCalender)
         val buttonReview: Button = findViewById(R.id.buttonReview)
+        val buttonAddSeat: Button = findViewById(R.id.buttonAddSeat)
 
         //bottom footer event listeners
         buttonToHome.setOnClickListener {
             //doNothing
-        }
-
-        buttonToSetting.setOnClickListener{
-            val intent = Intent(this@Restaurant, RestaurantAccountInfoShow::class.java)
-            intent.putExtra("userName", Restaurant.globalRestaurantName)
-            intent.putExtra("token", Restaurant.globalToken)
-            startActivity(intent)
-            client.close(WsClient.NORMAL_CLOSURE)
         }
 
         buttonToSeat.setOnClickListener {
@@ -98,12 +90,16 @@ class Restaurant : AppCompatActivity() {
             client.close(WsClient.NORMAL_CLOSURE)
         }
 
-        buttonToReserve.setOnClickListener {
-            TODO("not yet implemented")
-        }
-
         buttonToCalender.setOnClickListener {
             val intent = Intent(this@Restaurant, RestaurantCalendar::class.java)
+            intent.putExtra("token", Restaurant.globalToken)
+            startActivity(intent)
+            client.close(WsClient.NORMAL_CLOSURE)
+        }
+
+        buttonAddSeat.setOnClickListener {
+            val intent = Intent(this@Restaurant, RestaurantAccountInfoShow::class.java)
+            intent.putExtra("restaurantName", Restaurant.globalRestaurantName)
             intent.putExtra("token", Restaurant.globalToken)
             startActivity(intent)
             client.close(WsClient.NORMAL_CLOSURE)
