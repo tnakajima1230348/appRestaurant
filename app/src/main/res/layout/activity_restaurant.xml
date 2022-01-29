@@ -108,6 +108,14 @@
             android:backgroundTint="#eb4242"
             android:text="カレンダー" />
 
+        <Button
+            android:id="@+id/buttonReview"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:backgroundTint="#eb4242"
+            android:text="レビュー管理" />
+
     </LinearLayout>
 
 

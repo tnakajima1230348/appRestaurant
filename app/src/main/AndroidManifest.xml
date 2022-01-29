@@ -13,7 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppShop">
         <activity
-            android:name=".RestaurantCalendar"
+            android:name=".RestaurantSearchReview"
+            android:exported="false" />
+        <activity
+            android:name=".ShowRestaurantReservations"
             android:exported="false" />
         <activity
             android:name=".RestaurantAccountInfoShow"
