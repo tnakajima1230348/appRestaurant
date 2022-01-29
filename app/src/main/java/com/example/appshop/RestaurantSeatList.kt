@@ -89,19 +89,18 @@ class SeatListWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val seats: JSONArray = result.getJSONArray("seats")
-        val number = arrayOf<Int>()
-        var i: Int = 1
+        val name = arrayOf<String>()
 
         for (index in 0 until seats.length()) {
-            number[index] = i
-            ++i
+            val seat:JSONObject = seats.getJSONObject(index)
+            name[index] = seat.getString("seat_name")
         }
 
         activity.runOnUiThread{
             val listView = activity.findViewById<ListView>(R.id.listView)
 
             //ArrayAdapter
-            val adapter = ArrayAdapter<Int>(activity, android.R.layout.simple_list_item_1, number)
+            val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
 
             listView.adapter = adapter
 
