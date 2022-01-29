@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff00"
-    tools:context=".ShowRestaurantReservations">
+    tools:context=".ShowRestaurantReview">
 
     <TextView
         android:id="@+id/textView2"

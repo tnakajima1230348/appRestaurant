@@ -12,7 +12,7 @@ import org.json.JSONObject
 import java.lang.Exception
 import java.net.URI
 
-class ShowRestaurantReservations : AppCompatActivity() {
+class ShowRestaurantReview : AppCompatActivity() {
 
     companion object{
         const val reviewDeleteReqId = 6
@@ -23,7 +23,7 @@ class ShowRestaurantReservations : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_show_restaurant_reservations)
+        setContentView(R.layout.activity_show_restaurant_review)
     }
 
     override fun onResume() {
@@ -87,7 +87,7 @@ class ReviewDeleteWsClient(private val activity: Activity, uri: URI) : WsClient(
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
 
-        if (resId == ShowRestaurantReservations.reviewDeleteReqId){
+        if (resId == ShowRestaurantReview.reviewDeleteReqId){
             if(status == "success"){
                 val intent = Intent(activity, ShowResult::class.java)
                 intent.putExtra("message", "レビュー削除が完了しました")

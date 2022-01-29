@@ -210,7 +210,7 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
         //if message is about reviewManagement
         if(resId == Restaurant.getReviewInfoId){
             if(status == "success"){
-                val intent = Intent(activity, ShowRestaurantReservations::class.java) //画面遷移
+                val intent = Intent(activity, ShowRestaurantReview::class.java) //画面遷移
                 intent.putExtra("shopId", result.getInt("restaurant_id"))
                 intent.putExtra("message1", result.getString("evaluation_grade"))
                 intent.putExtra("message2", result.getString("evaluation_comment"))
