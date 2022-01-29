@@ -89,7 +89,10 @@ class Restaurant : AppCompatActivity() {
         }
 
         buttonToSeat.setOnClickListener {
-            TODO("not yet implemented")
+            val intent = Intent(this@Restaurant, RestaurantSeatList::class.java)
+            intent.putExtra("token", Restaurant.globalToken)
+            startActivity(intent)
+            client.close(WsClient.NORMAL_CLOSURE)
         }
 
         buttonToReserve.setOnClickListener {

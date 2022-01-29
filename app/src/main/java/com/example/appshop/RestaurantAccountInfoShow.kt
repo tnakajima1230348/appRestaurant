@@ -148,5 +148,5 @@ class RestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClien
                 }
             }
         }
-    }
+}
 

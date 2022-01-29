@@ -13,7 +13,6 @@ import org.json.JSONObject
 import java.lang.Exception
 import java.net.URI
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 class RestaurantSeatShow : AppCompatActivity() {
@@ -23,7 +22,7 @@ class RestaurantSeatShow : AppCompatActivity() {
     }
 
     private val uri = WsClient.serverRemote
-    private var client = RestaurantInfoWsClient(this, uri)
+    private var client = SeatInfoWsClient(this, uri)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,10 @@ class RestaurantSeatShow : AppCompatActivity() {
         super.onResume()
 
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
+        val buttonSeatInfoChange: Button = findViewById(R.id.buttonSeatInfoChange)
 
+
+        val arrayIndex = intent.getIntExtra("arrayIndex", 0)
         val token = Restaurant.globalToken
         val restaurantId = Restaurant.globalRestaurantId
 
@@ -65,18 +67,9 @@ class RestaurantSeatShow : AppCompatActivity() {
             }
         }
 
-        val wholeMsg = JSONObject()
-        val result: JSONObject = wholeMsg.getJSONObject("result")
-        val seats:JSONArray = result.getJSONArray("seats")
-        val names = arrayOf<String>()
-
-        for (seat in seats){
-            names[seat.index] = seat.getString("seat_name")
-        }
-
-        buttonAccountInfoChange.setOnClickListener {
+        buttonSeatInfoChange.setOnClickListener {
             if(client.isReceived){
-                val intent = Intent(this@RestaurantAccountInfoShow, RestaurantAccountInfoChange::class.java)
+                val intent = Intent(this@RestaurantSeatShow, RestaurantSeatInfoChange::class.java)
                 intent.putExtra("restaurantId", client.restaurantId)
                 intent.putExtra("restaurantName", client.restaurantName)
                 intent.putExtra("emailAddr", client.emailAddr)
@@ -101,14 +94,16 @@ class RestaurantSeatShow : AppCompatActivity() {
 
 }
 
-class RestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
+class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
+    var seatId: Int = -1
+    var seatName = ""
     var restaurantId: Int = -1
-    var restaurantName = ""
-    var emailAddr = ""
-    var address = ""
-    var time_open: String = ""
-    var time_close: String = ""
-    var features: String = ""
+    var capacity = ""
+    var isFilled: Boolean = false
+    var timeStart = ""
+    var stayingTime: String = ""
+    var avgStayTime: String = ""
+    var feature: String = ""
     var isReceived = false
 
     private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
@@ -128,6 +123,9 @@ class RestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClien
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
+        val seats: JSONArray = result.getJSONArray("seats")
+        val seat: JSONObject = seats.getJSONObject(RestaurantSeatShow.arrayIndex)
+
 
         if (resId == RestaurantAccountInfoShow.getRestaurantInfoId) {
             this.isReceived = true
@@ -157,5 +155,3 @@ class RestaurantInfoWsClient(private val activity: Activity, uri: URI) : WsClien
         }
     }
 }
-
-
