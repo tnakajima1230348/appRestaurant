@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f5e131"
-    tools:context=".RestaurantSeatShow">
+    tools:context=".RestaurantReservationShow">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:text="座席情報確認"
+                android:text="予約情報確認"
                 android:textSize="30sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,10 +65,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="座席ID" />
+                    android:text="予約ID" />
 
                 <TextView
-                    android:id="@+id/textBoxSeatId"
+                    android:id="@+id/textBoxReservationId"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="#efefef"
@@ -80,10 +80,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="座席名" />
+                    android:text="利用者ID" />
 
                 <TextView
-                    android:id="@+id/textBoxSeatName"
+                    android:id="@+id/textBoxUserId"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="#efefef"
@@ -95,10 +95,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="着席可能人数" />
+                    android:text="予約開始時間" />
 
                 <TextView
-                    android:id="@+id/textBoxCapacity"
+                    android:id="@+id/textBoxTimeStart"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="#efefef"
@@ -110,10 +110,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="利用状況" />
+                    android:text="予約終了時間" />
 
                 <TextView
-                    android:id="@+id/textBoxIsFilled"
+                    android:id="@+id/textBoxTimeEnd"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:background="#efefef"
@@ -121,50 +121,16 @@
                     android:paddingTop="3dp"
                     android:textSize="15dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="20dp"
-                    android:text="座席の特徴" />
-
-                <TextView
-                    android:id="@+id/textBoxSeatFeature"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:background="#efefef"
-                    android:backgroundTint="#efefef"
-                    android:paddingTop="3dp"
-                    android:textSize="15dp" />
 
                 <Button
-                    android:id="@+id/buttonSeatUseChange"
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="30dp"
-                    android:backgroundTint="#efefef"
-                    android:text="利用状況変更"
-                    android:textColor="#555555" />
-
-                <Button
-                    android:id="@+id/buttonSeatInfoChange"
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="30dp"
-                    android:backgroundTint="#efefef"
-                    android:text="座席情報変更"
-                    android:textColor="#555555" />
-
-                <Button
-                    android:id="@+id/buttonDeleteSeat"
+                    android:id="@+id/buttonDeleteReservation"
                     android:layout_width="200dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="50dp"
                     android:backgroundTint="#efefef"
-                    android:text="座席削除"
+                    android:text="予約削除"
                     android:textColor="#555555" />
 
             </LinearLayout>

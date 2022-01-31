@@ -18,18 +18,19 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 
-class RestaurantReservationSeat : AppCompatActivity() {
+class RestaurantReservationList : AppCompatActivity() {
 
     companion object{
-        const val getSeatInfoId: Int = 16
+        const val getSeatInfoId: Int = 17
+        var arrayIndex: Int = -1
     }
 
     private val uri = WsClient.serverRemote
-    private var client = ReservationSeatWsClient(this, uri)
+    private var client = ReservationListWsClient(this, uri)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_restaurant_reservation_seat)
+        setContentView(R.layout.activity_restaurant_seat_list)
     }
 
     override fun onResume() {
@@ -38,6 +39,8 @@ class RestaurantReservationSeat : AppCompatActivity() {
 
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
         val buttonAddSeat: Button = findViewById(R.id.buttonAddSeat)
+
+        arrayIndex = intent.getIntExtra("arrayIndex", 0)
 
         val token = Restaurant.globalToken
         val restaurantId = Restaurant.globalRestaurantId
@@ -73,11 +76,11 @@ class RestaurantReservationSeat : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        client = ReservationSeatWsClient(this, uri)
+        client = ReservationListWsClient(this, uri)
     }
 }
 
-class ReservationSeatWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
+class ReservationListWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
     var isReceived = false
 
     override fun onMessage(message: String?) {
@@ -89,26 +92,30 @@ class ReservationSeatWsClient(private val activity: Activity, uri: URI) : WsClie
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val seats: JSONArray = result.getJSONArray("seats")
-        val name = arrayOf<String>()
+        val seat: JSONObject = seats.getJSONObject(RestaurantReservationList.arrayIndex)
+        val reservations:JSONArray = seat.getJSONArray("reservations")
+        val number = arrayOf<Int>()
+        var i = 1
 
-        for (index in 0 until seats.length()) {
-            val seat:JSONObject = seats.getJSONObject(index)
-            name[index] = seat.getString("seat_name")
+        for (index in 0 until reservations.length()) {
+            number[index] = i
+            ++i
         }
 
         activity.runOnUiThread{
             val listView = activity.findViewById<ListView>(R.id.listView)
 
             //ArrayAdapter
-            val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
+            val adapter = ArrayAdapter<Int>(activity, android.R.layout.simple_list_item_1, number)
 
             listView.adapter = adapter
 
             listView.setOnItemClickListener { parent, view, position, id ->
 
                 if(this.isReceived){
-                    val intent = Intent(activity, RestaurantSeatShow::class.java)
-                    intent.putExtra("arrayIndex", position)
+                    val intent = Intent(activity, RestaurantReservationShow::class.java)
+                    intent.putExtra("arrayIndex", RestaurantReservationList.arrayIndex)
+                    intent.putExtra("arrayIndex2", position)
                     intent.putExtra("token", Restaurant.globalToken)
                     activity.startActivity(intent)
                     this.close(WsClient.NORMAL_CLOSURE)
