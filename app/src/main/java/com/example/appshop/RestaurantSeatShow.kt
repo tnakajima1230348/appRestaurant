@@ -73,15 +73,10 @@ class RestaurantSeatShow : AppCompatActivity() {
 
         buttonSeatInfoChange.setOnClickListener {
             if(client.isReceived){
-                val intent = Intent(this@RestaurantSeatShow, RestaurantSeatShow::class.java)
+                val intent = Intent(this@RestaurantSeatShow, RestaurantSeatInfoChange::class.java)
                 intent.putExtra("seatId", client.seatId)
                 intent.putExtra("seatName", client.seatName)
-                intent.putExtra("restaurantId", client.restaurantId)
                 intent.putExtra("capacity", client.capacity)
-                intent.putExtra("is_filled", client.isFilled)
-                intent.putExtra("time_start", client.timeStart)
-                intent.putExtra("staying_times", client.stayingTimes)
-                intent.putExtra("avg_staying_time", client.avgStayTime)
                 intent.putExtra("feature", client.feature)
                 intent.putExtra("token", token)
                 startActivity(intent)
