@@ -107,19 +107,22 @@ class RestaurantSeatShow : AppCompatActivity() {
         }
 
         buttonSeatUseChange.setOnClickListener {
-            val seats = JSONObject()
-            seats.put("seat_id", client.seatId)
+            val seats = JSONArray()
+            val seat = JSONObject()
+            seat.put("seat_id", client.seatId)
             if(client.isFilled == true) {
-                seats.put("is_filled", false)
+                seat.put("is_filled", false)
             } else if(client.isFilled == false) {
-                seats.put("is_filled", true)
+                seat.put("is_filled", true)
             }
+
+            seats.put(seat)
 
             val params = JSONObject()
             params.put("token", token)
             params.put("seats", seats)
 
-            val request = client.createJsonrpcReq("updateInfo/restaurant/seat", deleteSeatInfoId, params)
+            val request = client.createJsonrpcReq("updateInfo/restaurant/seatsAvailability", deleteSeatInfoId, params)
             try {
                 if(client.isClosed){
                     client.reconnect()

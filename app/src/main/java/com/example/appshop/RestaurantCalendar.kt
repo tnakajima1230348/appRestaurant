@@ -54,8 +54,9 @@ class RestaurantCalendar : AppCompatActivity() {
             val date = "$year/$month/$dayOfMonth"
 
             buttonAccountAddHoliday.setOnClickListener {
+                val dates = arrayOf<String>(date)
                 val params = JSONObject()
-                params.put("holidays", date)
+                params.put("holidays", dates)
                 params.put("type", "new")
                 params.put("token", token)
 
@@ -76,8 +77,9 @@ class RestaurantCalendar : AppCompatActivity() {
             }
 
             buttonAccountDeleteHoliday.setOnClickListener {
+                val dates = arrayOf<String>(date)
                 val params = JSONObject()
-                params.put("holidays", date)
+                params.put("holidays", dates)
                 params.put("type", "delete")
                 params.put("token", token)
 
