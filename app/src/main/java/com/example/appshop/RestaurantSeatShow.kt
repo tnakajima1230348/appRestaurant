@@ -19,6 +19,7 @@ class RestaurantSeatShow : AppCompatActivity() {
 
     companion object{
         const val getSeatInfoId: Int = 10
+        const val deleteSeatInfoId: Int = 12
         var arrayIndex: Int = -1
     }
 
@@ -28,14 +29,16 @@ class RestaurantSeatShow : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restaurant_seat_show)
-        client.connect()
     }
 
     override fun onResume() {
         super.onResume()
+        client.connect()
 
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
         val buttonSeatInfoChange: Button = findViewById(R.id.buttonSeatInfoChange)
+        val buttonDeleteSeat: Button = findViewById(R.id.buttonDeleteSeat)
+        val buttonSeatUseChange: Button = findViewById(R.id.buttonSeatUseChange)
 
 
         arrayIndex = intent.getIntExtra("arrayIndex", 0)
@@ -45,7 +48,7 @@ class RestaurantSeatShow : AppCompatActivity() {
         val getInfoParams = JSONObject()
         getInfoParams.put("restaurant_id", restaurantId)
         getInfoParams.put("token", token)
-        val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/basic", getSeatInfoId, getInfoParams)
+        val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/seats", getSeatInfoId, getInfoParams)
 
         //attempt to send until connection established
         Timer().schedule(50, 200) {
@@ -87,6 +90,53 @@ class RestaurantSeatShow : AppCompatActivity() {
                 return@setOnClickListener
             }
         }
+
+        buttonDeleteSeat.setOnClickListener {
+            val params = JSONObject()
+            params.put("token", token)
+            params.put("type", "delete")
+            params.put("seat_id", client.seatId)
+
+            val request = client.createJsonrpcReq("updateInfo/restaurant/seat", deleteSeatInfoId, params)
+            try {
+                if(client.isClosed){
+                    client.reconnect()
+                }
+                client.send(request.toString())
+            }catch (ex:Exception){
+                Log.i(javaClass.simpleName, "send failed")
+                Log.i(javaClass.simpleName, "$ex")
+                errorDisplay.text = "インターネットに接続されていません"
+                errorDisplay.visibility = View.VISIBLE
+            }
+        }
+
+        buttonSeatUseChange.setOnClickListener {
+            val seats = JSONObject()
+            seats.put("seat_id", client.seatId)
+            if(client.isFilled == true) {
+                seats.put("is_filled", false)
+            } else if(client.isFilled == false) {
+                seats.put("is_filled", true)
+            }
+
+            val params = JSONObject()
+            params.put("token", token)
+            params.put("seats", seats)
+
+            val request = client.createJsonrpcReq("updateInfo/restaurant/seat", deleteSeatInfoId, params)
+            try {
+                if(client.isClosed){
+                    client.reconnect()
+                }
+                client.send(request.toString())
+            }catch (ex:Exception){
+                Log.i(javaClass.simpleName, "send failed")
+                Log.i(javaClass.simpleName, "$ex")
+                errorDisplay.text = "インターネットに接続されていません"
+                errorDisplay.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onRestart() {
@@ -111,12 +161,10 @@ class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
     var isReceived = false
 
     private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
+    private val txtSeatId: TextView by lazy { activity.findViewById(R.id.textBoxSeatId) }
     private val txtSeatName: TextView by lazy { activity.findViewById(R.id.textBoxSeatName) }
     private val txtCapacity: TextView by lazy { activity.findViewById(R.id.textBoxCapacity) }
     private val txtIsFilled: TextView by lazy { activity.findViewById(R.id.textBoxIsFilled) }
-    private val txtTimeStart: TextView by lazy { activity.findViewById(R.id.textBoxTimeStart) }
-    private val txtStayingTimes: TextView by lazy { activity.findViewById(R.id.textBoxStayingTime) }
-    private val txtavgStayTime: TextView by lazy { activity.findViewById(R.id.textBoxAvgStayingTime) }
     private val txtFeature: TextView by lazy { activity.findViewById(R.id.textBoxSeatFeature) }
 
     override fun onMessage(message: String?) {
@@ -140,17 +188,12 @@ class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
                 this.restaurantId = seat.getInt("restaurant_id")
                 this.capacity = seat.getString("capacity")
                 this.isFilled = seat.getBoolean("is_filled")
-                this.timeStart = seat.getString("time_start")
-                this.stayingTimes = seat.getString("staying_times")
-                this.avgStayTime = seat.getString("avg_staying_time")
                 this.feature = seat.getString("feature")
 
                 activity.runOnUiThread {
+                    txtSeatId.text = this.seatId.toString()
                     txtSeatName.text = this.seatName
                     txtCapacity.text = this.capacity
-                    txtTimeStart.text = this.timeStart
-                    txtStayingTimes.text = this.stayingTimes
-                    txtavgStayTime.text = this.avgStayTime
                     txtFeature.text = this.feature
 
                     if(this.isFilled == true) {
@@ -164,6 +207,23 @@ class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
                 activity.runOnUiThread {
                     errorDisplay.text = "座席情報を取得できません"
                     errorDisplay.visibility = View.INVISIBLE
+                }
+            }
+        }
+
+        if(resId == RestaurantSeatShow.deleteSeatInfoId){
+            if(status == "success"){
+                val intent = Intent(activity, ShowResult::class.java)
+                intent.putExtra("message", "座席を削除しました")
+                intent.putExtra("transitionBtnMessage", "ホームへ")
+                intent.putExtra("isBeforeLogin", false)
+                this.close(NORMAL_CLOSURE)
+                activity.startActivity(intent)
+
+            }else if(status == "error"){
+                activity.runOnUiThread {
+                    errorDisplay.text = result.getString("reason")
+                    errorDisplay.visibility = View.VISIBLE
                 }
             }
         }

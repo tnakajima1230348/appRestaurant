@@ -28,6 +28,9 @@
             android:name=".RestaurantSeatShow"
             android:exported="false" />
         <activity
+            android:name=".RestaurantAddSeat"
+            android:exported="false" />
+        <activity
             android:name=".RestaurantAccountInfoShow"
             android:exported="false" />
         <activity

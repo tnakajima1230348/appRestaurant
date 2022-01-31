@@ -16,7 +16,8 @@ import kotlin.concurrent.schedule
 class RestaurantCalendar : AppCompatActivity() {
 
     companion object{
-        const val changeHolidayInfoId: Int = 8
+        const val addHolidayInfoId: Int = 8
+        const val deleteHolidayInfoId: Int = 14
     }
 
     private val uri = WsClient.serverRemote
@@ -25,11 +26,11 @@ class RestaurantCalendar : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restaurant_calendar)
-        client.connect()
     }
 
     override fun onResume() {
         super.onResume()
+        client.connect()
 
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
         val buttonAccountAddHoliday: Button = findViewById(R.id.buttonAccountAddHoliday)
@@ -58,8 +59,8 @@ class RestaurantCalendar : AppCompatActivity() {
                 params.put("type", "new")
                 params.put("token", token)
 
-                val request = client.createJsonrpcReq("updateInfo/restaurant/basic",
-                    changeHolidayInfoId, params)
+                val request = client.createJsonrpcReq("updateInfo/restaurant/holidays",
+                    addHolidayInfoId, params)
 
                 try {
                     if (client.isClosed) {
@@ -80,8 +81,8 @@ class RestaurantCalendar : AppCompatActivity() {
                 params.put("type", "delete")
                 params.put("token", token)
 
-                val request = client.createJsonrpcReq("updateInfo/restaurant/basic",
-                    changeHolidayInfoId, params)
+                val request = client.createJsonrpcReq("updateInfo/restaurant/holidays",
+                    deleteHolidayInfoId, params)
 
                 try {
                     if (client.isClosed) {
@@ -121,10 +122,27 @@ class HolidayInfoWsClient(private val activity: Activity, uri: URI) : WsClient(u
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
 
-        if(resId == RestaurantCalendar.changeHolidayInfoId){
+        if(resId == RestaurantCalendar.addHolidayInfoId){
             if(status == "success"){
                 val intent = Intent(activity, ShowResult::class.java)
-                intent.putExtra("message", "休日情報を変更しました")
+                intent.putExtra("message", "休日を追加しました")
+                intent.putExtra("transitionBtnMessage", "ホームへ")
+                intent.putExtra("isBeforeLogin", false)
+                this.close(NORMAL_CLOSURE)
+                activity.startActivity(intent)
+
+            }else if(status == "error"){
+                activity.runOnUiThread{
+                    errorDisplay.text = result.getString("reason")
+                    errorDisplay.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        if(resId == RestaurantCalendar.deleteHolidayInfoId){
+            if(status == "success"){
+                val intent = Intent(activity, ShowResult::class.java)
+                intent.putExtra("message", "休日を削除しました")
                 intent.putExtra("transitionBtnMessage", "ホームへ")
                 intent.putExtra("isBeforeLogin", false)
                 this.close(NORMAL_CLOSURE)

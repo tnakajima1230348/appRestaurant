@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import org.json.JSONArray
@@ -15,8 +16,6 @@ import java.lang.Exception
 import java.net.URI
 import java.util.*
 import kotlin.concurrent.schedule
-
-
 
 
 class RestaurantSeatList : AppCompatActivity() {
@@ -31,13 +30,14 @@ class RestaurantSeatList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_restaurant_seat_list)
-        client.connect()
     }
 
     override fun onResume() {
         super.onResume()
+        client.connect()
 
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
+        val buttonAddSeat: Button = findViewById(R.id.buttonAddSeat)
 
         val token = Restaurant.globalToken
         val restaurantId = Restaurant.globalRestaurantId
@@ -67,6 +67,17 @@ class RestaurantSeatList : AppCompatActivity() {
             if (client.isReceived) {
                 errorDisplay.visibility = View.INVISIBLE
                 this.cancel()
+            }
+        }
+
+        buttonAddSeat.setOnClickListener {
+            if(client.isReceived){
+                val intent = Intent(this@RestaurantSeatList, RestaurantAddSeat::class.java)
+                intent.putExtra("token", token)
+                startActivity(intent)
+                client.close(WsClient.NORMAL_CLOSURE)
+            }else{
+                return@setOnClickListener
             }
         }
     }

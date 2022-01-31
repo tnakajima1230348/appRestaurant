@@ -29,6 +29,7 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         client.connect()
+
         val currentRestaurantId = intent.getIntExtra("restaurantId", 0)
         val currentRestaurantName = intent.getStringExtra("restaurantName")
         val currentEmail = intent.getStringExtra("emailAddr")

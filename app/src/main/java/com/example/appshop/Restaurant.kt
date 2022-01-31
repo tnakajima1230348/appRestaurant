@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
@@ -66,9 +67,27 @@ class Restaurant : AppCompatActivity() {
         Thread( getRestaurantInfo ).start()
 
         Log.i(javaClass.simpleName, "restaurantId ${Restaurant.globalRestaurantId}")
-        Log.i(javaClass.simpleName, "token recved ${Restaurant.globalToken}")
+        Log.i(javaClass.simpleName, "token received ${Restaurant.globalToken}")
         Log.i(javaClass.simpleName, "token expiry ${Restaurant.globalTokenExpiry}")
         Log.i(javaClass.simpleName, "restaurantName: ${Restaurant.globalRestaurantName}")
+
+        val getRestaurantInfoParams = JSONObject()
+        getRestaurantInfoParams.put("searchBy", "restaurant_name")
+        getRestaurantInfoParams.put("restaurant_name", this.restaurant_name)
+        getRestaurantInfoParams.put("token", globalToken)
+        val getRestaurantInfoRequest = client.createJsonrpcReq("getInfo/restaurant/basic",
+            getRestaurantInfoId, getRestaurantInfoParams)
+        try {
+            if (client.isClosed) {
+                client.reconnect()
+            }
+            client.send(getRestaurantInfoRequest.toString())
+            //errorDisplay.text = "情報取得中..."
+            //errorDisplay.visibility = View.VISIBLE
+        } catch (ex: Exception) {
+            Log.i(javaClass.simpleName, "send failed")
+            Log.i(javaClass.simpleName, "$ex")
+        }
 
         val buttonToHome: Button = findViewById(R.id.buttonHome)
         val buttonToSetting: Button = findViewById(R.id.buttonSetting)
@@ -76,15 +95,18 @@ class Restaurant : AppCompatActivity() {
         val buttonLogout: Button = findViewById(R.id.buttonLogout)
         val buttonToCalender: Button = findViewById(R.id.buttonCalender)
         val buttonReview: Button = findViewById(R.id.buttonReview)
-        val buttonAddSeat: Button = findViewById(R.id.buttonAddSeat)
+        val buttonToReservation: Button = findViewById(R.id.buttonReservation)
 
         //bottom footer event listeners
         buttonToHome.setOnClickListener {
             //doNothing
         }
 
+
         buttonToSeat.setOnClickListener {
             val intent = Intent(this@Restaurant, RestaurantSeatList::class.java)
+            intent.putExtra("restaurantId", Restaurant.globalRestaurantId)
+            intent.putExtra("restaurantName", Restaurant.globalRestaurantName)
             intent.putExtra("token", Restaurant.globalToken)
             startActivity(intent)
             client.close(WsClient.NORMAL_CLOSURE)
@@ -92,17 +114,23 @@ class Restaurant : AppCompatActivity() {
 
         buttonToCalender.setOnClickListener {
             val intent = Intent(this@Restaurant, RestaurantCalendar::class.java)
+            intent.putExtra("restaurantId", Restaurant.globalRestaurantId)
+            intent.putExtra("restaurantName", Restaurant.globalRestaurantName)
             intent.putExtra("token", Restaurant.globalToken)
             startActivity(intent)
             client.close(WsClient.NORMAL_CLOSURE)
         }
 
-        buttonAddSeat.setOnClickListener {
+        buttonToSetting.setOnClickListener {
             val intent = Intent(this@Restaurant, RestaurantAccountInfoShow::class.java)
             intent.putExtra("restaurantName", Restaurant.globalRestaurantName)
             intent.putExtra("token", Restaurant.globalToken)
             startActivity(intent)
             client.close(WsClient.NORMAL_CLOSURE)
+        }
+
+        buttonToReservation.setOnClickListener {
+            TODO()
         }
 
         buttonReview.setOnClickListener {
@@ -184,7 +212,7 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
         params.put("searchBy", "user_name")
         params.put("user_name", Restaurant.globalRestaurantName)
         params.put("token", Restaurant.globalToken)
-        val request = this.createJsonrpcReq("getInfo/user/basic", Restaurant.getRestaurantInfoId, params)
+        val request = this.createJsonrpcReq("getInfo/restaurant/basic", Restaurant.getRestaurantInfoId, params)
         this.send(request.toString())
     }
 
@@ -202,6 +230,8 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
+        Restaurant.globalRestaurantId = result.getInt("restaurant_id")
+
 
         //if message is about reviewManagement
         if(resId == Restaurant.getReviewInfoId){
@@ -256,6 +286,7 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
                 this.time_open = result.getString("time_open")
                 this.time_close = result.getString("time_close")
                 this.features = result.getString("features")
+                Restaurant.globalRestaurantId = result.getInt("restaurant_id")
             }else if(status == "error"){
                 Log.i(javaClass.simpleName, "getInfo failed")
             }
