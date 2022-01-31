@@ -230,7 +230,6 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
-        Restaurant.globalRestaurantId = result.getInt("restaurant_id")
 
 
         //if message is about reviewManagement
