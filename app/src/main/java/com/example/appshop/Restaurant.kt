@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import org.java_websocket.handshake.ServerHandshake
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URI
 
@@ -25,7 +26,6 @@ class Restaurant : AppCompatActivity() {
 
     companion object{
         const val logoutReqId: Int = 3
-        const val getReviewInfoId: Int = 6
         const val getRestaurantInfoId: Int = 7
         var globalToken = ""
         var globalRestaurantId = -1
@@ -139,24 +139,12 @@ class Restaurant : AppCompatActivity() {
         }
 
         buttonReview.setOnClickListener {
-            val shopId = globalRestaurantId
-            val token = globalToken
-
-            val getInfoParams = JSONObject()
-            getInfoParams.put("restaurant_id", shopId)
-            getInfoParams.put("token", token)
-            val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/evaluations", getReviewInfoId, getInfoParams)
-            try {
-                if (client.isClosed) {
-                    client.reconnect()
-                }
-                client.send(getInfoRequest.toString())
-                //errorDisplay.text = "情報取得中..."
-                //errorDisplay.visibility = View.VISIBLE
-            } catch (ex: Exception) {
-                Log.i(javaClass.simpleName, "send failed")
-                Log.i(javaClass.simpleName, "$ex")
-            }
+            val intent = Intent(this@Restaurant, RestaurantReviewList::class.java)
+            intent.putExtra("restaurantId", Restaurant.globalRestaurantId)
+            intent.putExtra("restaurantName", Restaurant.globalRestaurantName)
+            intent.putExtra("token", Restaurant.globalToken)
+            startActivity(intent)
+            client.close(WsClient.NORMAL_CLOSURE)
         }
 
         buttonLogout.setOnClickListener {
@@ -235,26 +223,6 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
-
-
-        //if message is about reviewManagement
-        if(resId == Restaurant.getReviewInfoId){
-            if(status == "success"){
-                val intent = Intent(activity, ShowRestaurantReview::class.java) //画面遷移
-                intent.putExtra("shopId", result.getInt("restaurant_id"))
-                intent.putExtra("message1", result.getString("evaluation_grade"))
-                intent.putExtra("message2", result.getString("evaluation_comment"))
-                activity.startActivity(intent)
-                this.close(WsClient.NORMAL_CLOSURE)
-
-            }else if(status == "error"){
-                Log.i(javaClass.simpleName, "no user matched")
-                activity.runOnUiThread{
-                    //errorDisplay.text = "アカウント情報を取得できません"
-                    //errorDisplay.visibility = View.INVISIBLE
-                }
-            }
-        }
 
         //if message is about logout
         if(resId == Restaurant.logoutReqId){

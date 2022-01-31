@@ -8,25 +8,22 @@
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_account_info_show.xml" value="0.22" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_account_select.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_account_setting.xml" value="0.13333333333333333" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_add_seat.xml" value="0.10461956521739131" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_calendar.xml" value="0.22" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_calender.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_holiday.xml" value="0.21195652173913043" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_holiday_info_change.xml" value="0.22" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_holiday_list.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_holiday_info_change.xml" value="0.13333333333333333" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_login.xml" value="0.14817629179331307" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_register_account.xml" value="0.14666666666666667" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_reservation_list.xml" value="0.22" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_reservation_show.xml" value="0.14564336372847012" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_reserve_list.xml" value="0.13722826086956522" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_seat_change.xml" value="0.10461956521739131" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_seat_info_change.xml" value="0.1" />
-        <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_seat_list.xml" value="0.22" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_restaurant_seat_show.xml" value="0.22" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_show_reserve.xml" value="0.1" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_show_restaurant_reservations.xml" value="0.22" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/activity_show_result.xml" value="0.14666666666666667" />
         <entry key="..\:/Users/NAKAJIMA/AndroidStudioProjects/appShop/app/src/main/res/layout/example.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/mf214/AndroidStudioProjects/appRestaurant/app/src/main/res/layout/activity_restaurant.xml" value="0.25" />
+        <entry key="..\:/Users/mf214/AndroidStudioProjects/appRestaurant/app/src/main/res/layout/activity_restaurant_review_list.xml" value="0.25" />
+        <entry key="..\:/Users/mf214/AndroidStudioProjects/appRestaurant/app/src/main/res/layout/activity_restaurant_seat_list.xml" value="0.25" />
+        <entry key="..\:/Users/mf214/AndroidStudioProjects/appRestaurant/app/src/main/res/layout/activity_restaurant_seat_show.xml" value="0.25" />
+        <entry key="..\:/Users/mf214/AndroidStudioProjects/appRestaurant/app/src/main/res/layout/activity_show_restaurant_review.xml" value="0.25" />
       </map>
     </option>
   </component>
