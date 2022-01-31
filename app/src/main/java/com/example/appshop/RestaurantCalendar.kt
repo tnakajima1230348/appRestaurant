@@ -35,6 +35,7 @@ class RestaurantCalendar : AppCompatActivity() {
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
         val buttonAccountAddHoliday: Button = findViewById(R.id.buttonAccountAddHoliday)
         val buttonAccountDeleteHoliday: Button = findViewById(R.id.buttonAccountDeleteHoliday)
+        val buttonAccountHolidayList:Button = findViewById(R.id.buttonAccountHolidayList)
 
         val token = Restaurant.globalToken
         val restaurantName = Restaurant.globalRestaurantName
@@ -97,6 +98,13 @@ class RestaurantCalendar : AppCompatActivity() {
                     errorDisplay.text = "インターネットに接続されていません"
                     errorDisplay.visibility = View.VISIBLE
                 }
+            }
+
+            buttonAccountHolidayList.setOnClickListener {
+                val intent = Intent(this@RestaurantCalendar, RestaurantHolidayList::class.java)
+                intent.putExtra("token", token)
+                startActivity(intent)
+                client.close(WsClient.NORMAL_CLOSURE)
             }
 
         }
