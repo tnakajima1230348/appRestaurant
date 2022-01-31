@@ -50,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"
+            android:textColor="@color/black"
             android:backgroundTint="#efefef"
             android:paddingTop="3dp"
             android:textSize="15dp" />
@@ -66,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"
+            android:textColor="@color/black"
             android:backgroundTint="#efefef"
             android:paddingTop="3dp"
             android:textSize="15dp" />
@@ -81,6 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"
+            android:textColor="@color/black"
             android:backgroundTint="#efefef"
             android:paddingTop="3dp"
             android:textSize="15dp" />
@@ -96,6 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"
+            android:textColor="@color/black"
             android:backgroundTint="#efefef"
             android:paddingTop="3dp"
             android:textSize="15dp" />
@@ -111,6 +115,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"
+            android:textColor="@color/black"
             android:backgroundTint="#efefef"
             android:paddingTop="3dp"
             android:textSize="15dp" />
@@ -126,6 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="#efefef"
+            android:textColor="@color/black"
             android:backgroundTint="#efefef"
             android:paddingTop="3dp"
             android:textSize="15dp" />

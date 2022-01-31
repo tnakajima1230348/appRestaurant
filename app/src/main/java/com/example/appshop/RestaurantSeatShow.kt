@@ -2,11 +2,13 @@ package com.example.appshop
 
 import android.app.Activity
 import android.content.Intent
+import android.hardware.camera2.params.Capability
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import org.json.JSONArray
 import org.json.JSONObject
@@ -20,7 +22,7 @@ class RestaurantSeatShow : AppCompatActivity() {
     companion object{
         const val getSeatInfoId: Int = 10
         const val deleteSeatInfoId: Int = 12
-        var arrayIndex: Int = -1
+        const val seatUseInfoId: Int = 19
     }
 
     private val uri = WsClient.serverRemote
@@ -41,56 +43,50 @@ class RestaurantSeatShow : AppCompatActivity() {
         val buttonSeatUseChange: Button = findViewById(R.id.buttonSeatUseChange)
 
 
-        arrayIndex = intent.getIntExtra("arrayIndex", 0)
+        val seatId = intent.getIntExtra("seatId",0)
+        val seatName = intent.getStringExtra("seatName")
+        val capacity = intent.getIntExtra("capacity", 0)
+        val isFilled = intent.getBooleanExtra("isFilled", false)
+        val feature = intent.getStringExtra("feature")
+        var fill: String = "空"
+
         val token = Restaurant.globalToken
         val restaurantId = Restaurant.globalRestaurantId
 
-        val getInfoParams = JSONObject()
-        getInfoParams.put("restaurant_id", restaurantId)
-        getInfoParams.put("token", token)
-        val getInfoRequest = client.createJsonrpcReq("getInfo/restaurant/seats", getSeatInfoId, getInfoParams)
+        val etxtSeatId: TextView = findViewById(R.id.textBoxSeatId)
+        val etxtSeatName: TextView = findViewById(R.id.textBoxSeatName)
+        val etxtCapacity: TextView = findViewById(R.id.textBoxCapacity)
+        val etxtIsFilled: TextView = findViewById(R.id.textBoxIsFilled)
+        val etxtFeature: TextView = findViewById(R.id.textBoxSeatFeature)
 
-        //attempt to send until connection established
-        Timer().schedule(50, 200) {
-            Log.i(javaClass.simpleName, "set req ${getInfoRequest.toString()}")
-            try {
-                if (client.isClosed) {
-                    client.reconnect()
-                }
-                client.send(getInfoRequest.toString())
-                errorDisplay.text = "情報取得中..."
-                errorDisplay.visibility = View.VISIBLE
-            } catch (ex: Exception) {
-                Log.i(javaClass.simpleName, "send failed")
-                Log.i(javaClass.simpleName, "$ex")
-            }
-            // if msg arrived
-            if(client.isReceived){
-                errorDisplay.visibility = View.INVISIBLE
-                this.cancel()
-            }
+        etxtSeatId.setText(seatId.toString())
+        etxtSeatName.setText(seatName)
+        etxtCapacity.setText(capacity.toString())
+        etxtFeature.setText(feature)
+
+        if(isFilled == true) {
+            fill = "満"
+            etxtIsFilled.setText(fill)
+        } else if (isFilled == false){
+            etxtIsFilled.setText(fill)
         }
 
         buttonSeatInfoChange.setOnClickListener {
-            if(client.isReceived){
-                val intent = Intent(this@RestaurantSeatShow, RestaurantSeatInfoChange::class.java)
-                intent.putExtra("seatId", client.seatId)
-                intent.putExtra("seatName", client.seatName)
-                intent.putExtra("capacity", client.capacity)
-                intent.putExtra("feature", client.feature)
-                intent.putExtra("token", token)
-                startActivity(intent)
-                client.close(WsClient.NORMAL_CLOSURE)
-            }else{
-                return@setOnClickListener
-            }
+            val intent = Intent(this@RestaurantSeatShow, RestaurantSeatInfoChange::class.java)
+            intent.putExtra("seatId", seatId)
+            intent.putExtra("seatName", seatName)
+            intent.putExtra("capacity", capacity)
+            intent.putExtra("feature", feature)
+            intent.putExtra("token", token)
+            startActivity(intent)
+            client.close(WsClient.NORMAL_CLOSURE)
         }
 
         buttonDeleteSeat.setOnClickListener {
             val params = JSONObject()
             params.put("token", token)
             params.put("type", "delete")
-            params.put("seat_id", client.seatId)
+            params.put("seat_id", seatId)
 
             val request = client.createJsonrpcReq("updateInfo/restaurant/seat", deleteSeatInfoId, params)
             try {
@@ -109,10 +105,10 @@ class RestaurantSeatShow : AppCompatActivity() {
         buttonSeatUseChange.setOnClickListener {
             val seats = JSONArray()
             val seat = JSONObject()
-            seat.put("seat_id", client.seatId)
-            if(client.isFilled == true) {
+            seat.put("seat_id", seatId)
+            if(isFilled == true) {
                 seat.put("is_filled", false)
-            } else if(client.isFilled == false) {
+            } else if(isFilled == false) {
                 seat.put("is_filled", true)
             }
 
@@ -122,7 +118,7 @@ class RestaurantSeatShow : AppCompatActivity() {
             params.put("token", token)
             params.put("seats", seats)
 
-            val request = client.createJsonrpcReq("updateInfo/restaurant/seatsAvailability", deleteSeatInfoId, params)
+            val request = client.createJsonrpcReq("updateInfo/restaurant/seatsAvailability", seatUseInfoId, params)
             try {
                 if(client.isClosed){
                     client.reconnect()
@@ -146,16 +142,6 @@ class RestaurantSeatShow : AppCompatActivity() {
 }
 
 class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
-    var seatId: Int = -1
-    var seatName = ""
-    var restaurantId: Int = -1
-    var capacity = ""
-    var isFilled: Boolean = false
-    var fill = "空"
-    var timeStart = ""
-    var stayingTimes: String = ""
-    var avgStayTime: String = ""
-    var feature: String = ""
     var isReceived = false
 
     private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
@@ -174,40 +160,8 @@ class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
-        val seats: JSONArray = result.getJSONArray("seats")
-        val seat: JSONObject = seats.getJSONObject(RestaurantSeatShow.arrayIndex)
 
 
-        if (resId == RestaurantSeatShow.getSeatInfoId) {
-            this.isReceived = true
-            if (status == "success") {
-                this.seatId = seat.getInt("seat_id")
-                this.seatName = seat.getString("seat_name")
-                this.restaurantId = seat.getInt("restaurant_id")
-                this.capacity = seat.getString("capacity")
-                this.isFilled = seat.getBoolean("is_filled")
-                this.feature = seat.getString("feature")
-
-                activity.runOnUiThread {
-                    txtSeatId.text = this.seatId.toString()
-                    txtSeatName.text = this.seatName
-                    txtCapacity.text = this.capacity
-                    txtFeature.text = this.feature
-
-                    if(this.isFilled == true) {
-                        txtIsFilled.text = this.fill
-                    } else {
-                        this.fill = "満"
-                        txtIsFilled.text = this.fill
-                    }
-                }
-            } else if (status == "error") {
-                activity.runOnUiThread {
-                    errorDisplay.text = "座席情報を取得できません"
-                    errorDisplay.visibility = View.INVISIBLE
-                }
-            }
-        }
 
         if(resId == RestaurantSeatShow.deleteSeatInfoId){
             if(status == "success"){
@@ -219,6 +173,23 @@ class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
                 activity.startActivity(intent)
 
             }else if(status == "error"){
+                activity.runOnUiThread {
+                    errorDisplay.text = result.getString("reason")
+                    errorDisplay.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        if(resId == RestaurantSeatShow.seatUseInfoId) {
+            if (status == "success") {
+                val intent = Intent(activity, ShowResult::class.java)
+                intent.putExtra("message", "座席利用状況を変更しました")
+                intent.putExtra("transitionBtnMessage", "ホームへ")
+                intent.putExtra("isBeforeLogin", false)
+                this.close(NORMAL_CLOSURE)
+                activity.startActivity(intent)
+
+            } else if (status == "error") {
                 activity.runOnUiThread {
                     errorDisplay.text = result.getString("reason")
                     errorDisplay.visibility = View.VISIBLE

@@ -88,10 +88,6 @@ class ChangeSeatInfoWsClient(private val activity: Activity, uri: URI) : WsClien
         activity.findViewById(R.id.errorDisplay)
     }
 
-    private val etxtRestaurantName: EditText by lazy {
-        activity.findViewById(R.id.textBoxRestaurantName)
-    }
-
     override fun onMessage(message: String?) {
         super.onMessage(message)
         Log.i(javaClass.simpleName, "msg arrived")

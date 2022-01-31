@@ -85,14 +85,16 @@ class HolidayListWsClient(private val activity: Activity, uri: URI) : WsClient(u
             val name = mutableListOf<String>()
             for (index in 0 until holidays.length()) {
                 name.add(holidays.get(index).toString())
+                Log.i(javaClass.simpleName, "${name[index]}")
             }
+            Log.i(javaClass.simpleName, "$name")
 
             activity.runOnUiThread {
                 val listView = activity.findViewById<ListView>(R.id.listView)
 
                 //ArrayAdapter
                 val adapter =
-                    ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
+                    ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name.toTypedArray())
 
                 listView.adapter = adapter
             }
