@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONArray
 import org.json.JSONObject
 import org.w3c.dom.DOMStringList
@@ -31,7 +32,7 @@ class RestaurantHolidayList : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_restaurant_seat_list)
+        setContentView(R.layout.activity_restaurant_holiday_list)
     }
 
     override fun onResume() {
@@ -39,40 +40,9 @@ class RestaurantHolidayList : AppCompatActivity() {
         client.connect()
 
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
-        val buttonAddSeat: Button = findViewById(R.id.buttonAddSeat)
 
         arrayIndex = intent.getIntExtra("arrayIndex", 0)
 
-        val token = Restaurant.globalToken
-        val restaurantId = Restaurant.globalRestaurantId
-
-        val getInfoParams = JSONObject()
-        getInfoParams.put("searchBy", "restaurant_id")
-        getInfoParams.put("restaurant_id", restaurantId)
-        getInfoParams.put("token", token)
-        val getInfoRequest =
-            client.createJsonrpcReq("getInfo/restaurant/basic", getHolidayInfoId, getInfoParams)
-
-        //attempt to send until connection established
-        Timer().schedule(50, 200) {
-            Log.i(javaClass.simpleName, "set req ${getInfoRequest.toString()}")
-            try {
-                if (client.isClosed) {
-                    client.reconnect()
-                }
-                client.send(getInfoRequest.toString())
-                errorDisplay.text = "情報取得中..."
-                errorDisplay.visibility = View.VISIBLE
-            } catch (ex: Exception) {
-                Log.i(javaClass.simpleName, "send failed")
-                Log.i(javaClass.simpleName, "$ex")
-            }
-            // if msg arrived
-            if (client.isReceived) {
-                errorDisplay.visibility = View.INVISIBLE
-                this.cancel()
-            }
-        }
     }
 
     override fun onRestart() {
@@ -84,6 +54,23 @@ class RestaurantHolidayList : AppCompatActivity() {
 class HolidayListWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
     var isReceived = false
 
+    private fun sendReqGetRestaurantInfo(){
+        val getInfoParams = JSONObject()
+        getInfoParams.put("searchBy", "restaurant_id")
+        getInfoParams.put("restaurant_id", Restaurant.globalRestaurantId)
+        getInfoParams.put("token", Restaurant.globalToken)
+        val getInfoRequest =
+            this.createJsonrpcReq("getInfo/restaurant/basic",
+                RestaurantHolidayList.getHolidayInfoId, getInfoParams)
+
+        this.send(getInfoRequest.toString())
+    }
+
+    override fun onOpen(handshakedata: ServerHandshake?) {
+        super.onOpen(handshakedata)
+        this.sendReqGetRestaurantInfo()
+    }
+
     override fun onMessage(message: String?) {
         super.onMessage(message)
         Log.i(javaClass.simpleName, "msg arrived")
@@ -92,22 +79,27 @@ class HolidayListWsClient(private val activity: Activity, uri: URI) : WsClient(u
         val wholeMsg = JSONObject("$message")
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
-        val holidays: JSONArray = result.getJSONArray("holidays")
-        val name = arrayOf<String>()
-        for (index in 0 until holidays.length()) {
-            name[index] = holidays.get(index).toString()
+        if (resId == RestaurantHolidayList.getHolidayInfoId) {
+            val holidays: JSONArray = result.getJSONArray("holidays")
+
+            val name = mutableListOf<String>()
+            for (index in 0 until holidays.length()) {
+                name.add(holidays.get(index).toString())
+            }
+
+            activity.runOnUiThread {
+                val listView = activity.findViewById<ListView>(R.id.listView)
+
+                //ArrayAdapter
+                val adapter =
+                    ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
+
+                listView.adapter = adapter
+            }
+            if (resId == RestaurantSeatList.getSeatInfoId) {
+                this.isReceived = true
+            }
         }
 
-        activity.runOnUiThread{
-            val listView = activity.findViewById<ListView>(R.id.listView)
-
-            //ArrayAdapter
-            val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
-
-            listView.adapter = adapter
-        }
-        if (resId == RestaurantSeatList.getSeatInfoId) {
-            this.isReceived = true
-        }
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Exception
 import java.net.URI
@@ -52,10 +53,16 @@ class RestaurantCalendar : AppCompatActivity() {
         calenderView.date = System.currentTimeMillis()
 
         calenderView.setOnDateChangeListener{ view, year, month, dayOfMonth ->
-            val date = "$year/$month/$dayOfMonth"
+
+            var date = this.getFormatDate(year, month+1, dayOfMonth)
+            date = """$date"""
+
+            Log.i(javaClass.simpleName, date)
 
             buttonAccountAddHoliday.setOnClickListener {
-                val dates = arrayOf<String>(date)
+                val dates = JSONArray()
+                dates.put(date)
+                Log.i(javaClass.simpleName, dates.toString())
                 val params = JSONObject()
                 params.put("holidays", dates)
                 params.put("type", "new")
@@ -78,8 +85,11 @@ class RestaurantCalendar : AppCompatActivity() {
             }
 
             buttonAccountDeleteHoliday.setOnClickListener {
-                val dates = arrayOf<String>(date)
+                val dates = JSONArray()
+                dates.put(date)
+                Log.i(javaClass.simpleName, dates.toString())
                 val params = JSONObject()
+
                 params.put("holidays", dates)
                 params.put("type", "delete")
                 params.put("token", token)
@@ -100,19 +110,36 @@ class RestaurantCalendar : AppCompatActivity() {
                 }
             }
 
-            buttonAccountHolidayList.setOnClickListener {
-                val intent = Intent(this@RestaurantCalendar, RestaurantHolidayList::class.java)
-                intent.putExtra("token", token)
-                startActivity(intent)
-                client.close(WsClient.NORMAL_CLOSURE)
-            }
-
+        }
+        buttonAccountHolidayList.setOnClickListener {
+            val intent = Intent(this@RestaurantCalendar, RestaurantHolidayList::class.java)
+            intent.putExtra("token", token)
+            startActivity(intent)
+            client.close(WsClient.NORMAL_CLOSURE)
         }
     }
 
     override fun onRestart() {
         super.onRestart()
         client = HolidayInfoWsClient(this, uri)
+    }
+
+    private fun getFormatDate(year: Int, month: Int, date:Int):String{
+        var strMonth: String = ""
+        var strDate: String = ""
+        strMonth = if (month < 10){
+            "0$month"
+        }else{
+            "$month"
+        }
+
+        strDate = if (date < 10){
+            "0$date"
+        }else{
+            "$date"
+        }
+
+        return "$year/$strMonth/$strDate"
     }
 
 }

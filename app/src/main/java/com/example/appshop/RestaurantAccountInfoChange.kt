@@ -61,7 +61,7 @@ class RestaurantAccountInfoChange : AppCompatActivity() {
         buttonSubmit.setOnClickListener {
 
             val params = JSONObject()
-            params.put("user_name", etxtRestaurantName.text.toString())
+            params.put("restaurant_name", etxtRestaurantName.text.toString())
             params.put("email_addr", etxtRestaurantEmail.text.toString())
             params.put("address", etxtRestaurantAddress.text.toString())
             params.put("time_open", etxtRestaurantTimeOpen.text.toString())

@@ -214,8 +214,8 @@ class RestaurantTopWsClient(private val activity: Activity, uri: URI) : WsClient
     fun sendReqGetRestaurantInfoByName(token: String, clientName: String){
         Log.i(javaClass.simpleName, "send request to get user information")
         val params = JSONObject()
-        params.put("searchBy", "user_name")
-        params.put("user_name", Restaurant.globalRestaurantName)
+        params.put("searchBy", "restaurant_name")
+        params.put("restaurant_name", Restaurant.globalRestaurantName)
         params.put("token", Restaurant.globalToken)
         val request = this.createJsonrpcReq("getInfo/restaurant/basic", Restaurant.getRestaurantInfoId, params)
         this.send(request.toString())

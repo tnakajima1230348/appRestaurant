@@ -22,6 +22,21 @@
             android:name=".RestaurantCalendar"
             android:exported="false" />
         <activity
+            android:name=".RestaurantHolidayList"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantReservationSeat"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantReservationList"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantReservationShow"
+            android:exported="false" />
+        <activity
+            android:name=".RestaurantSeatInfoChange"
+            android:exported="false" />
+        <activity
             android:name=".RestaurantSeatList"
             android:exported="false" />
         <activity
