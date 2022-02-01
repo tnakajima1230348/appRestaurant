@@ -37,13 +37,11 @@ class RestaurantReservationSeat : AppCompatActivity() {
         client.connect()
 
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
-        val buttonAddSeat: Button = findViewById(R.id.buttonAddSeat)
 
         val token = Restaurant.globalToken
         val restaurantId = Restaurant.globalRestaurantId
 
         val getInfoParams = JSONObject()
-        getInfoParams.put("searchBy", "restaurant_id")
         getInfoParams.put("restaurant_id", restaurantId)
         getInfoParams.put("token", token)
         val getInfoRequest =
@@ -88,37 +86,38 @@ class ReservationSeatWsClient(private val activity: Activity, uri: URI) : WsClie
         val wholeMsg = JSONObject("$message")
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
-        val seats: JSONArray = result.getJSONArray("seats")
-        val name = arrayOf<String>()
 
-        for (index in 0 until seats.length()) {
-            val seat:JSONObject = seats.getJSONObject(index)
-            name[index] = seat.getString("seat_name")
-        }
+        if(resId == RestaurantReservationSeat.getSeatInfoId){
+            this.isReceived = true
+            val seats: JSONArray = result.getJSONArray("seats")
+            val name = arrayOf<String>()
 
-        activity.runOnUiThread{
-            val listView = activity.findViewById<ListView>(R.id.listView)
+            for (index in 0 until seats.length()) {
+                val seat:JSONObject = seats.getJSONObject(index)
+                name[index] = seat.getString("seat_name")
+            }
 
-            //ArrayAdapter
-            val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
+            activity.runOnUiThread{
+                val listView = activity.findViewById<ListView>(R.id.listView)
 
-            listView.adapter = adapter
+                //ArrayAdapter
+                val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
 
-            listView.setOnItemClickListener { parent, view, position, id ->
+                listView.adapter = adapter
 
-                if(this.isReceived){
-                    val intent = Intent(activity, RestaurantSeatShow::class.java)
-                    intent.putExtra("arrayIndex", position)
-                    intent.putExtra("token", Restaurant.globalToken)
-                    activity.startActivity(intent)
-                    this.close(WsClient.NORMAL_CLOSURE)
-                }else{
-                    return@setOnItemClickListener
+                listView.setOnItemClickListener { parent, view, position, id ->
+
+                    if(this.isReceived){
+                        val intent = Intent(activity, RestaurantReservationList::class.java)
+                        intent.putExtra("seatId", seats.getJSONObject(position).getInt("seat_id"))
+                        intent.putExtra("token", Restaurant.globalToken)
+                        activity.startActivity(intent)
+                        this.close(WsClient.NORMAL_CLOSURE)
+                    }else{
+                        return@setOnItemClickListener
+                    }
                 }
             }
-        }
-        if (resId == RestaurantSeatList.getSeatInfoId) {
-            this.isReceived = true
         }
     }
 }

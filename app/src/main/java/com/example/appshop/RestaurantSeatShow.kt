@@ -142,14 +142,8 @@ class RestaurantSeatShow : AppCompatActivity() {
 }
 
 class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri) {
-    var isReceived = false
 
     private val errorDisplay: TextView by lazy { activity.findViewById(R.id.errorDisplay) }
-    private val txtSeatId: TextView by lazy { activity.findViewById(R.id.textBoxSeatId) }
-    private val txtSeatName: TextView by lazy { activity.findViewById(R.id.textBoxSeatName) }
-    private val txtCapacity: TextView by lazy { activity.findViewById(R.id.textBoxCapacity) }
-    private val txtIsFilled: TextView by lazy { activity.findViewById(R.id.textBoxIsFilled) }
-    private val txtFeature: TextView by lazy { activity.findViewById(R.id.textBoxSeatFeature) }
 
     override fun onMessage(message: String?) {
         super.onMessage(message)
@@ -160,8 +154,6 @@ class SeatInfoWsClient(private val activity: Activity, uri: URI) : WsClient(uri)
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
         val status: String = result.getString("status")
-
-
 
         if(resId == RestaurantSeatShow.deleteSeatInfoId){
             if(status == "success"){
