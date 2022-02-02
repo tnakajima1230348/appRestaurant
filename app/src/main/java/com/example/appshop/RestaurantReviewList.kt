@@ -37,7 +37,7 @@ class RestaurantReviewList : AppCompatActivity() {
         client.connect()
 
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
-        val buttonReviewManage: Button = findViewById(R.id.buttonAddSeat)
+        val buttonReviewManage: Button = findViewById(R.id.buttonReviewManage)
 
         val token = Restaurant.globalToken
         val restaurantId = Restaurant.globalRestaurantId
@@ -98,37 +98,41 @@ class ReviewListWsClient(private val activity: Activity, uri: URI) : WsClient(ur
         val wholeMsg = JSONObject("$message")
         val resId: Int = wholeMsg.getInt("id")
         val result: JSONObject = wholeMsg.getJSONObject("result")
-        val evaluations: JSONArray = result.getJSONArray("evaluations")
-        val name = arrayOf<String>()
-
-        for (index in 0 until evaluations.length()) {
-            val evaluation:JSONObject = evaluations.getJSONObject(index)
-            name[index] = evaluation.getString("evaluation_grade")
-        }
-
-        activity.runOnUiThread{
-            val listView = activity.findViewById<ListView>(R.id.listView)
-
-            //ArrayAdapter
-            val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
-
-            listView.adapter = adapter
-
-            listView.setOnItemClickListener { parent, view, position, id ->
-
-                if(this.isReceived){
-                    val intent = Intent(activity, ShowRestaurantReview::class.java)
-                    intent.putExtra("arrayIndex", position)
-                    intent.putExtra("token", Restaurant.globalToken)
-                    activity.startActivity(intent)
-                    this.close(WsClient.NORMAL_CLOSURE)
-                }else{
-                    return@setOnItemClickListener
-                }
-            }
-        }
         if (resId == RestaurantReviewList.getReviewInfoId) {
             this.isReceived = true
+            val evaluations: JSONArray = result.getJSONArray("evaluations")
+            val name = mutableListOf<String>()
+
+            for (index in 0 until evaluations.length()) {
+                val evaluation:JSONObject = evaluations.getJSONObject(index)
+                name.add(evaluation.getString("evaluation_grade"))
+            }
+
+            activity.runOnUiThread{
+                val listView = activity.findViewById<ListView>(R.id.listView)
+
+                //ArrayAdapter
+                val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
+
+                listView.adapter = adapter
+
+                listView.setOnItemClickListener { parent, view, position, id ->
+
+                    if(this.isReceived){
+                        val intent = Intent(activity, ShowRestaurantReview::class.java)
+                        intent.putExtra("evaluationId", evaluations.getJSONObject(position).getInt("ecaluation_id"))
+                        intent.putExtra("restaurantId", evaluations.getJSONObject(position).getInt("restaurant_id"))
+                        intent.putExtra("userId", evaluations.getJSONObject(position).getInt("user_id"))
+                        intent.putExtra("evaluationGrade", evaluations.getJSONObject(position).getString("evaluation_grade"))
+                        intent.putExtra("evaluationComment", evaluations.getJSONObject(position).getString("evaluation_comment"))
+                        intent.putExtra("token", Restaurant.globalToken)
+                        activity.startActivity(intent)
+                        this.close(WsClient.NORMAL_CLOSURE)
+                    }else{
+                        return@setOnItemClickListener
+                    }
+                }
+            }
         }
     }
 }
