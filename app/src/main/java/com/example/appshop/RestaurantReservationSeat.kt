@@ -90,31 +90,33 @@ class ReservationSeatWsClient(private val activity: Activity, uri: URI) : WsClie
         if(resId == RestaurantReservationSeat.getSeatInfoId){
             this.isReceived = true
             val seats: JSONArray = result.getJSONArray("seats")
-            val name = arrayOf<String>()
+            val name = mutableListOf<String>()
 
-            for (index in 0 until seats.length()) {
-                val seat:JSONObject = seats.getJSONObject(index)
-                name[index] = seat.getString("seat_name")
-            }
+            if(seats.length() != 0){
+                for (index in 0 until seats.length()) {
+                    val seat:JSONObject = seats.getJSONObject(index)
+                    name.add(seat.getString("seat_name"))
+                }
 
-            activity.runOnUiThread{
-                val listView = activity.findViewById<ListView>(R.id.listView)
+                activity.runOnUiThread{
+                    val listView = activity.findViewById<ListView>(R.id.listView)
 
-                //ArrayAdapter
-                val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
+                    //ArrayAdapter
+                    val adapter = ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, name)
 
-                listView.adapter = adapter
+                    listView.adapter = adapter
 
-                listView.setOnItemClickListener { parent, view, position, id ->
+                    listView.setOnItemClickListener { parent, view, position, id ->
 
-                    if(this.isReceived){
-                        val intent = Intent(activity, RestaurantReservationList::class.java)
-                        intent.putExtra("seatId", seats.getJSONObject(position).getInt("seat_id"))
-                        intent.putExtra("token", Restaurant.globalToken)
-                        activity.startActivity(intent)
-                        this.close(WsClient.NORMAL_CLOSURE)
-                    }else{
-                        return@setOnItemClickListener
+                        if(this.isReceived){
+                            val intent = Intent(activity, RestaurantReservationList::class.java)
+                            intent.putExtra("seatId", seats.getJSONObject(position).getInt("seat_id"))
+                            intent.putExtra("token", Restaurant.globalToken)
+                            activity.startActivity(intent)
+                            this.close(WsClient.NORMAL_CLOSURE)
+                        }else{
+                            return@setOnItemClickListener
+                        }
                     }
                 }
             }

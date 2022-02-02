@@ -40,7 +40,7 @@ class RestaurantReservationList : AppCompatActivity() {
         val errorDisplay: TextView = findViewById(R.id.errorDisplay)
 
         seatId = intent.getIntExtra("seatId", 0)
-        val restaurantId = Restaurant.globalRestaurantName
+        val restaurantId = Restaurant.globalRestaurantId
         val token = Restaurant.globalToken
 
         val getInfoParams = JSONObject()
