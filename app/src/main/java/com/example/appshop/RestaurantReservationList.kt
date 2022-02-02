@@ -110,6 +110,7 @@ class ReservationListWsClient(private val activity: Activity, uri: URI) : WsClie
                 if (reservations.length() != 0) {
                     for (index in 0 until reservations.length()) {
                         name.add("予約" + i.toString())
+                        ++i
                     }
 
                     activity.runOnUiThread{

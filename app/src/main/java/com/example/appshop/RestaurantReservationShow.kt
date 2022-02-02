@@ -60,7 +60,7 @@ class RestaurantReservationShow : AppCompatActivity() {
             params.put("type", "delete")
             params.put("reservation_id", reservationId)
 
-            val request = client.createJsonrpcReq("updateInfo/restaurant/seat",
+            val request = client.createJsonrpcReq("updateInfo/reservation",
                 RestaurantSeatShow.deleteSeatInfoId, params)
             try {
                 if(client.isClosed){
